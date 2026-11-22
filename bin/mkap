@@ -1,0 +1,57 @@
+<?php
+
+declare(strict_types=1);
+
+use ProIT365\MultiKeyAuth\Cli\AuditLogger;
+use ProIT365\MultiKeyAuth\Cli\CliApplication;
+use ProIT365\MultiKeyAuth\Cli\CliOptions;
+
+$root = dirname(__DIR__);
+$autoload = $root . '/vendor/autoload.php';
+if (is_file($autoload)) {
+    require $autoload;
+} else {
+    spl_autoload_register(static function (string $class) use ($root): void {
+        $prefixes = [
+            'ProIT365\\MultiKeyAuth\\Cli\\' => $root . '/src/',
+            'ProIT365\\MultiKeyAuth\\Core\\Server\\' => $root . '/../server/src/Server/',
+            'ProIT365\\MultiKeyAuth\\Core\\' => $root . '/../core/src/',
+        ];
+        foreach ($prefixes as $prefix => $directory) {
+            if (str_starts_with($class, $prefix)) {
+                $file = $directory . str_replace(
+                    '\\',
+                    DIRECTORY_SEPARATOR,
+                    substr($class, strlen($prefix))
+                ) . '.php';
+                if (is_file($file)) {
+                    require $file;
+                }
+                return;
+            }
+        }
+    });
+}
+
+$dsn = getenv('MKAP_CLI_DSN') ?: null;
+$username = getenv('MKAP_CLI_DB_USERNAME') ?: null;
+$password = getenv('MKAP_CLI_DB_PASSWORD') ?: null;
+$auditPath = getenv('MKAP_CLI_AUDIT_LOG') ?: null;
+$database = null;
+if ($dsn !== null) {
+    try {
+        $database = new PDO($dsn, $username, $password, [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        ]);
+    } catch (Throwable $error) {
+        fwrite(STDERR, 'ERROR: Unable to connect to the MKAP database: '
+            . $error->getMessage() . PHP_EOL);
+        exit(1);
+    }
+}
+
+exit((new CliApplication(
+    new CliOptions($argv),
+    $database,
+    new AuditLogger($auditPath)
+))->run());
