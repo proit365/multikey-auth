@@ -1,9 +1,9 @@
 # JavaScript SDK
 
-Package: `@realmatrix/multikey-auth`
+Package: `@proit365/multikey-auth`
 
 ```js
-const { MkapClient } = require('@realmatrix/multikey-auth');
+const { MkapClient } = require('@proit365/multikey-auth');
 const client = new MkapClient({
   baseUri: 'https://api.example.test',
   clientId: 'CLIENT_001',

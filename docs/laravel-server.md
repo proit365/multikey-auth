@@ -1,6 +1,6 @@
 # Laravel Server
 
-Package: `realmatrix/laravel-multikey-auth-server`
+Package: `proit365/laravel-multikey-auth-server`
 
 ```bash
 php artisan vendor:publish --tag=mkap-config

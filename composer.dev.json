@@ -1,0 +1,84 @@
+{
+  "name": "proit365/multikey-auth-development-workspace",
+  "description": "Local development workspace for the ProIT365 MultiKey Auth monorepo",
+  "type": "project",
+  "license": "MIT",
+  "require-dev": {
+    "ext-pdo_sqlite": "*",
+    "orchestra/testbench": "^10.0",
+    "phpunit/phpunit": "^11.5",
+    "proit365/laravel-multikey-auth": "1.0.x-dev",
+    "proit365/laravel-multikey-auth-server": "1.0.x-dev",
+    "proit365/multikey-auth": "1.0.x-dev",
+    "proit365/multikey-auth-cli": "1.0.x-dev",
+    "proit365/multikey-auth-core": "1.0.x-dev",
+    "proit365/multikey-auth-server": "1.0.x-dev"
+  },
+  "repositories": [
+    {
+      "type": "path",
+      "url": "packages/core",
+      "options": {
+        "symlink": true,
+        "versions": {
+          "proit365/multikey-auth-core": "1.0.x-dev"
+        }
+      }
+    },
+    {
+      "type": "path",
+      "url": "packages/server",
+      "options": {
+        "symlink": true,
+        "versions": {
+          "proit365/multikey-auth-server": "1.0.x-dev"
+        }
+      }
+    },
+    {
+      "type": "path",
+      "url": "packages/client-php",
+      "options": {
+        "symlink": true,
+        "versions": {
+          "proit365/multikey-auth": "1.0.x-dev"
+        }
+      }
+    },
+    {
+      "type": "path",
+      "url": "packages/laravel-server",
+      "options": {
+        "symlink": true,
+        "versions": {
+          "proit365/laravel-multikey-auth-server": "1.0.x-dev"
+        }
+      }
+    },
+    {
+      "type": "path",
+      "url": "packages/laravel-client",
+      "options": {
+        "symlink": true,
+        "versions": {
+          "proit365/laravel-multikey-auth": "1.0.x-dev"
+        }
+      }
+    },
+    {
+      "type": "path",
+      "url": "packages/cli",
+      "options": {
+        "symlink": true,
+        "versions": {
+          "proit365/multikey-auth-cli": "1.0.x-dev"
+        }
+      }
+    }
+  ],
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "scripts": {
+    "test:smoke": "php tests/phase13-smoke.php"
+  }
+}

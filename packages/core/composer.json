@@ -1,11 +1,16 @@
 {
-    "name": "realmatrix/multikey-auth-core",
+    "name": "proit365/multikey-auth-core",
     "description": "Framework-independent cryptographic core for ProIT365 MultiKey Auth MKAP v1",
     "homepage": "https://github.com/proit365/multikey-auth",
     "type": "library",
     "license": "MIT",
     "require": {
-        "php": "^8.2"
+        "php": "^8.2",
+        "ext-openssl": "*"
+    },
+    "suggest": {
+        "ext-mysqli": "Required only when using MysqliKeyRepository.",
+        "ext-pdo": "Required only when using PdoKeyRepository."
     },
     "require-dev": {
         "phpunit/phpunit": "^11.5"

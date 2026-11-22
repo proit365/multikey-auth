@@ -1,6 +1,5 @@
 name: proit365_multikey_auth
-description: Server-side and Flutter-compatible MKAP v1 client SDK for ProIT365 MultiKey Auth.
-publish_to: none
+description: MKAP v1 client SDK for Dart and Flutter applications.
 version: 1.0.0
 repository: https://github.com/proit365/multikey-auth
 issue_tracker: https://github.com/proit365/multikey-auth/issues

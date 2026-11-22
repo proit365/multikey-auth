@@ -1,5 +1,5 @@
 {
-  "name": "@realmatrix/multikey-auth",
+  "name": "@proit365/multikey-auth",
   "version": "1.0.0",
   "description": "Server-side JavaScript SDK for ProIT365 MultiKey Auth MKAP v1",
   "main": "src/index.js",
@@ -8,7 +8,8 @@
   "homepage": "https://github.com/proit365/multikey-auth",
   "repository": {
     "type": "git",
-    "url": "https://github.com/proit365/multikey-auth.git"
+    "url": "https://github.com/proit365/multikey-auth.git",
+    "directory": "packages/javascript"
   },
   "engines": {
     "node": ">=12"

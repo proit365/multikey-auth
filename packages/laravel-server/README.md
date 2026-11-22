@@ -1,6 +1,6 @@
 # Laravel Server Package
 
-`realmatrix/laravel-multikey-auth-server` integrates the framework-independent
+`proit365/laravel-multikey-auth-server` integrates the framework-independent
 MKAP server with Laravel 12. It requires PHP 8.2 or newer; Laravel 13 is not
 supported by this package version. Laravel integration tests are included but
 could not be run in the current environment because Composer could not verify

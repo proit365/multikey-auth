@@ -1,11 +1,11 @@
 # JavaScript SDK
 
-`@realmatrix/multikey-auth` is a server-side JavaScript implementation of MKAP
+`@proit365/multikey-auth` is a server-side JavaScript implementation of MKAP
 v1 for Node.js. It uses Node's built-in `crypto` APIs, supports Node.js 12 and
 later, and has no runtime dependencies.
 
 ```js
-const { MkapClient } = require('@realmatrix/multikey-auth');
+const { MkapClient } = require('@proit365/multikey-auth');
 
 const client = new MkapClient({
   baseUri: 'https://api.example.test',

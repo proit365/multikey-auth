@@ -1,6 +1,6 @@
 # Laravel Client
 
-Package: `realmatrix/laravel-multikey-auth`
+Package: `proit365/laravel-multikey-auth`
 
 ```bash
 php artisan vendor:publish --tag=mkap-client-config

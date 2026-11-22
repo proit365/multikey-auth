@@ -1,6 +1,6 @@
 # Laravel Client Package
 
-`realmatrix/laravel-multikey-auth` integrates the PHP MKAP client with Laravel
+`proit365/laravel-multikey-auth` integrates the PHP MKAP client with Laravel
 12. It publishes configuration and exposes the client through dependency
 injection or the `MKAP` facade.
 

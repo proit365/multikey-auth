@@ -1,6 +1,6 @@
 # PHP Client SDK
 
-`realmatrix/multikey-auth` provides PHP request signing against an MKAP v1
+`proit365/multikey-auth` provides PHP request signing against an MKAP v1
 server. It validates client exports, obtains a challenge, derives the proof
 internally, and returns the target API's normal HTTP response.
 
