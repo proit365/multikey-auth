@@ -2,8 +2,14 @@
     "name": "proit365/multikey-auth-server",
     "description": "Framework-independent MKAP challenge issuer and authentication verifier",
     "homepage": "https://github.com/proit365/multikey-auth",
+    "keywords": ["authentication", "mkap", "php", "server", "proit365"],
     "type": "library",
     "license": "MIT",
+    "support": {
+        "issues": "https://github.com/proit365/multikey-auth/issues",
+        "source": "https://github.com/proit365/multikey-auth/tree/main/packages/server",
+        "docs": "https://github.com/proit365/multikey-auth/tree/main/packages/server"
+    },
     "require": {
         "php": "^8.2",
         "proit365/multikey-auth-core": "^1.0"
