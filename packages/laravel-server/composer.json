@@ -1,6 +1,6 @@
 {
   "name": "proit365/laravel-multikey-auth-server",
-  "description": "Laravel 12 server adapter for ProIT365 MultiKey Auth MKAP v1",
+  "description": "Laravel 12 server integration for ProIT365 MultiKey Auth (MKAP), with challenge routes, authentication middleware, and key administration commands.",
   "homepage": "https://github.com/proit365/multikey-auth",
   "keywords": ["authentication", "laravel", "mkap", "php", "server", "proit365"],
   "type": "library",

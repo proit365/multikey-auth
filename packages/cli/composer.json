@@ -1,6 +1,6 @@
 {
   "name": "proit365/multikey-auth-cli",
-  "description": "Framework-independent administrative CLI for ProIT365 MultiKey Auth",
+  "description": "Administrative PHP CLI for ProIT365 MultiKey Auth (MKAP), with client and pool management, key lifecycle operations, exports, challenge cleanup, and audit records.",
   "homepage": "https://github.com/proit365/multikey-auth",
   "keywords": ["administration", "authentication", "cli", "mkap", "php", "proit365"],
   "type": "library",

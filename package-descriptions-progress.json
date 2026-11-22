@@ -1,0 +1,62 @@
+{
+  "packages": [
+    {
+      "package": "proit365/multikey-auth-core",
+      "manifest": "packages/core/composer.json",
+      "inspection_status": "inspected",
+      "description_update_status": "updated",
+      "validation_status": "composer_validate_passed"
+    },
+    {
+      "package": "proit365/multikey-auth-server",
+      "manifest": "packages/server/composer.json",
+      "inspection_status": "inspected",
+      "description_update_status": "updated",
+      "validation_status": "composer_validate_passed"
+    },
+    {
+      "package": "proit365/multikey-auth",
+      "manifest": "packages/client-php/composer.json",
+      "inspection_status": "inspected",
+      "description_update_status": "updated",
+      "validation_status": "composer_validate_passed"
+    },
+    {
+      "package": "proit365/laravel-multikey-auth-server",
+      "manifest": "packages/laravel-server/composer.json",
+      "inspection_status": "inspected",
+      "description_update_status": "updated",
+      "validation_status": "composer_validate_passed"
+    },
+    {
+      "package": "proit365/laravel-multikey-auth",
+      "manifest": "packages/laravel-client/composer.json",
+      "inspection_status": "inspected",
+      "description_update_status": "updated",
+      "validation_status": "composer_validate_passed"
+    },
+    {
+      "package": "proit365/multikey-auth-cli",
+      "manifest": "packages/cli/composer.json",
+      "inspection_status": "inspected",
+      "description_update_status": "updated",
+      "validation_status": "composer_validate_passed"
+    },
+    {
+      "package": "proit365_multikey_auth",
+      "manifest": "packages/flutter/pubspec.yaml",
+      "inspection_status": "inspected",
+      "description_update_status": "updated",
+      "validation_status": "pub_get_passed; pub_publish_dry_run_warning_modified_git_state; flutter_test_passed"
+    },
+    {
+      "package": "@proit365/multikey-auth",
+      "manifest": "packages/javascript/package.json",
+      "inspection_status": "inspected",
+      "description_update_status": "updated",
+      "validation_status": "manifest_read_passed; npm_test_passed; npm_pkg_get_unavailable_in_npm_6"
+    }
+  ],
+  "skipped": [],
+  "additional_distributable_packages": []
+}
