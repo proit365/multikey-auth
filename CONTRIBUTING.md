@@ -9,6 +9,19 @@
 - Record security-sensitive deviations outside the repository if project
   planning files are intentionally kept separate.
 
+## Source of truth and package distributions
+
+Develop and review all changes in this monorepo's `main` branch. The Composer
+distribution repositories are generated subtree mirrors, not independent
+development repositories; do not make direct development changes there. Apply
+fixes here and synchronize the package split afterward. See the
+[distribution workflow](tools/release/README.md) for mappings, release order,
+tagging, and recovery.
+
+Use the root `composer.dev.json` workspace manifest for local internal package
+dependencies. Do not add monorepo path repositories to publishable package
+manifests.
+
 ## Verification
 
 PHP smoke and syntax:
@@ -16,6 +29,13 @@ PHP smoke and syntax:
 ```bash
 php tests/phase13-smoke.php
 php tests/benchmark_phase13.php
+```
+
+For the local Composer workspace:
+
+```bash
+COMPOSER=composer.dev.json composer install
+COMPOSER=composer.dev.json composer test:smoke
 ```
 
 JavaScript:

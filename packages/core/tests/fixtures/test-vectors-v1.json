@@ -1,0 +1,44 @@
+{
+  "protocol": "MKAP",
+  "version": 1,
+  "description": "Deterministic known-answer fixture. It is not a production secret fixture.",
+  "encoding": {
+    "length_prefix": "32-bit unsigned big-endian byte length",
+    "uint32": "32-bit unsigned big-endian",
+    "uint64": "64-bit unsigned big-endian",
+    "text": "UTF-8",
+    "base64url": "RFC 4648 base64url without padding"
+  },
+  "hkdf": {
+    "algorithm": "HKDF-SHA256",
+    "salt_hex": "2020202020202020202020202020202020202020202020202020202020202020",
+    "ikm_hex": "111111111111111111111111111111111111111111111111111111111111111112121212121212121212121212121212121212121212121212121212121212121313131313131313131313131313131313131313131313131313131313131313",
+    "info_hex": "000000044d4b4150000000010000000a434c49454e545f30303100000010000102030405060708090a0b0c0d0e0f000000010000000300000006613866333178000000067a3731713562000000066b393270346d",
+    "output_hex": "52a7c239373bed1bfd480da423b11ececfdb3c7755894a98300d4f68d2545d83"
+  },
+  "proof": {
+    "expires_at": 1893456000,
+    "http_method": "POST",
+    "request_target": "/api/orders?status=pending",
+    "body_sha256_hex": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "pool_version": 1,
+    "key_ids": [
+      "a8f31x",
+      "z71q5b",
+      "k92p4m"
+    ],
+    "message_hex": "000000010000000a434c49454e545f30303100000010000102030405060708090a0b0c0d0e0f0000002020202020202020202020202020202020202020202020202020202020202020200000000070dbd88000000004504f53540000001a2f6170692f6f72646572733f7374617475733d70656e64696e6700000020e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855000000010000000300000006613866333178000000067a3731713562000000066b393270346d",
+    "hmac_hex": "794d3132ba84413c477401dbbce1867445c02cb083535276923da3e5b96fdbcc",
+    "hmac_base64url": "eU0xMrqEQTxHdAHbvOGGdEXALLCDU1J2kj2j5blv28w"
+  },
+  "challenge_fixture": {
+    "client_id": "CLIENT_001",
+    "request_id_hex": "000102030405060708090a0b0c0d0e0f",
+    "nonce_hex": "2020202020202020202020202020202020202020202020202020202020202020",
+    "request_id_base64url": "AAECAwQFBgcICQoLDA0ODw",
+    "nonce_base64url": "ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA",
+    "key_ids": "a8f31xz71q5bk92p4m",
+    "key_count": 3,
+    "id_length": 6
+  }
+}

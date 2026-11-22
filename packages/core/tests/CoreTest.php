@@ -134,7 +134,7 @@ final class CoreTest extends TestCase
 
     private function loadVector(): array
     {
-        $path = dirname(__DIR__, 3) . '/specification/test-vectors-v1.json';
+        $path = __DIR__ . '/fixtures/test-vectors-v1.json';
         return json_decode((string) file_get_contents($path), true, 512, JSON_THROW_ON_ERROR);
     }
 

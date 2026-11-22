@@ -6,31 +6,53 @@ use ProIT365\MultiKeyAuth\Cli\AuditLogger;
 use ProIT365\MultiKeyAuth\Cli\CliApplication;
 use ProIT365\MultiKeyAuth\Cli\CliOptions;
 
-$root = dirname(__DIR__, 3);
-spl_autoload_register(static function (string $class) use ($root): void {
-    $prefixes = [
-        'ProIT365\\MultiKeyAuth\\Cli\\' => $root . '/packages/cli/src/',
-        'ProIT365\\MultiKeyAuth\\Core\\Server\\' => $root . '/packages/server/src/Server/',
-        'ProIT365\\MultiKeyAuth\\Core\\' => $root . '/packages/core/src/',
-    ];
-    foreach ($prefixes as $prefix => $directory) {
-        if (str_starts_with($class, $prefix)) {
-            $file = $directory . str_replace(
-                '\\',
-                DIRECTORY_SEPARATOR,
-                substr($class, strlen($prefix))
-            ) . '.php';
-            if (is_file($file)) {
-                require $file;
+$packageRoot = dirname(__DIR__);
+$monorepoRoot = dirname(__DIR__, 3);
+$isMonorepo = is_file($monorepoRoot . '/packages/cli/composer.json')
+    && is_dir($monorepoRoot . '/packages/core/src')
+    && is_dir($monorepoRoot . '/packages/server/src');
+
+if ($isMonorepo) {
+    $root = $monorepoRoot;
+    spl_autoload_register(static function (string $class) use ($root): void {
+        $prefixes = [
+            'ProIT365\\MultiKeyAuth\\Cli\\' => $root . '/packages/cli/src/',
+            'ProIT365\\MultiKeyAuth\\Core\\Server\\' => $root . '/packages/server/src/Server/',
+            'ProIT365\\MultiKeyAuth\\Core\\' => $root . '/packages/core/src/',
+        ];
+        foreach ($prefixes as $prefix => $directory) {
+            if (str_starts_with($class, $prefix)) {
+                $file = $directory . str_replace(
+                    '\\',
+                    DIRECTORY_SEPARATOR,
+                    substr($class, strlen($prefix))
+                ) . '.php';
+                if (is_file($file)) {
+                    require $file;
+                }
+                return;
             }
-            return;
         }
-    }
-});
+    });
+} else {
+    require $packageRoot . '/vendor/autoload.php';
+}
 
 $pdo = new PDO('sqlite::memory:');
 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-$pdo->exec(file_get_contents($root . '/database/sqlite/001_mkap_tables.sql'));
+$schemaPath = __DIR__ . '/fixtures/001_mkap_tables.sql';
+$schema = file_get_contents($schemaPath);
+if ($schema === false) {
+    throw new RuntimeException('Unable to read the CLI SQLite test fixture.');
+}
+if ($isMonorepo) {
+    $canonicalSchema = file_get_contents($root . '/database/sqlite/001_mkap_tables.sql');
+    if ($canonicalSchema === false
+        || str_replace("\r\n", "\n", $canonicalSchema) !== str_replace("\r\n", "\n", $schema)) {
+        throw new RuntimeException('The CLI SQLite fixture differs from the canonical monorepo schema.');
+    }
+}
+$pdo->exec($schema);
 $pdo->exec(
     "INSERT INTO mkap_clients "
     . "(client_identifier, name, status, created_at, updated_at) "
@@ -129,6 +151,7 @@ if ($auditContent === false || !str_contains($auditContent, 'export.validate')) 
     throw new RuntimeException('CLI audit output was not recorded.');
 }
 @unlink($exportPath);
+@unlink($audit);
 putenv('MKAP_CLI_MASTER_KEY_HEX');
 
 echo "Phase 12 CLI administrative tests passed.\n";
