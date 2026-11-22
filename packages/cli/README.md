@@ -14,7 +14,8 @@ vendor/bin/mkap help
 ```
 
 The package requires PHP `^8.2` and `ext-pdo`. The selected database driver
-must also be enabled in PHP.
+must also be enabled in PHP. Running the package test script additionally
+requires the `ext-pdo_sqlite` development dependency.
 
 Examples:
 

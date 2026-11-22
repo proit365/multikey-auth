@@ -131,15 +131,17 @@ bash tools/release/split-packages.sh --package core --version "$VERSION" --push
 ```
 
 The script updates `main` with a normal non-force push. With `--version`, it
-checks that an existing remote tag points to the exact split commit; otherwise
-it creates the matching tag. It accepts one pushed package per invocation.
+checks that an existing remote tag is annotated and points to the exact split
+commit; otherwise it creates and pushes an annotated tag. It accepts one
+pushed package per invocation. Git committer identity must be configured for
+annotated tag creation.
 Never initialize a distribution repository with a competing README/license
 commit: the first subtree push expects an empty repository. A normal push will
 reject unrelated or divergent history rather than overwrite it.
 
 After verifying the pushed branch and `vX.Y.Z` tag, create a GitHub Release
 from that tag in the package's distribution repository if a release page is
-desired. The local script creates tags only; it does not create GitHub Releases.
+desired. The local script creates annotated tags only; it does not create GitHub Releases.
 
 Before each push:
 

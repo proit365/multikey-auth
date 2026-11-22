@@ -11,7 +11,7 @@ Packages: core, server, client-php, laravel-server, laravel-client, cli
 
 Without --push, compute and validate local subtree commits only.
 --push updates exactly one distribution repository and never force-pushes.
---version creates the matching remote v<version> tag when used with --push.
+--version creates the matching annotated remote v<version> tag when used with --push.
 EOF
 }
 
@@ -232,31 +232,45 @@ for package in "${selected_packages[@]}"; do
     fi
 
     if ((push_enabled)); then
-        remote_tag_hash=''
+        remote_tag_object=''
+        remote_tag_commit=''
         if [[ -n "$release_version" ]]; then
             tag_ref="refs/tags/v$release_version"
             if ! remote_tag_info="$(git -C "$repository_root" ls-remote --tags "$target_repository" "$tag_ref" "$tag_ref^{}" 2>&1)"; then
                 echo "Unable to inspect remote tag '$tag_ref': $remote_tag_info" >&2
                 exit 1
             fi
-            remote_tag_commit=''
-            remote_peeled_commit=''
             while IFS=$'\t' read -r remote_hash remote_ref; do
                 case "$remote_ref" in
-                    "$tag_ref") remote_tag_commit="$remote_hash" ;;
-                    "$tag_ref^{}") remote_peeled_commit="$remote_hash" ;;
+                    "$tag_ref") remote_tag_object="$remote_hash" ;;
+                    "$tag_ref^{}") remote_tag_commit="$remote_hash" ;;
                 esac
             done <<< "$remote_tag_info"
-            remote_tag_hash="${remote_peeled_commit:-$remote_tag_commit}"
-            if [[ -n "$remote_tag_hash" && "$remote_tag_hash" != "$split_commit" ]]; then
+            if [[ -n "$remote_tag_object" && -z "$remote_tag_commit" ]]; then
+                echo "Remote tag 'v$release_version' is lightweight; refusing to replace it with an annotated tag." >&2
+                exit 1
+            fi
+            if [[ -n "$remote_tag_commit" && "$remote_tag_commit" != "$split_commit" ]]; then
                 echo "Remote tag 'v$release_version' already points to a different commit; refusing to overwrite it." >&2
                 exit 1
             fi
         fi
 
         git -C "$repository_root" push "$target_repository" "$split_commit:refs/heads/main"
-        if [[ -n "$release_version" && -z "$remote_tag_hash" ]]; then
-            git -C "$repository_root" push "$target_repository" "$split_commit:refs/tags/v$release_version"
+        if [[ -n "$release_version" && -z "$remote_tag_object" ]]; then
+            tagger_ident="$(git -C "$repository_root" var GIT_COMMITTER_IDENT)"
+            if ! annotated_tag_object="$(
+                printf 'object %s\ntype commit\ntag v%s\ntagger %s\n\nRelease v%s for %s.\n' \
+                    "$split_commit" "$release_version" "$tagger_ident" \
+                    "$release_version" "$package" |
+                    git -C "$repository_root" mktag 2>&1
+            )"; then
+                echo "Unable to create annotated tag object for '$package': $annotated_tag_object" >&2
+                exit 1
+            fi
+            git -C "$repository_root" push "$target_repository" \
+                "$annotated_tag_object:refs/tags/v$release_version"
+            printf "Pushed annotated tag 'v%s' for '%s'.\n" "$release_version" "$package"
         elif [[ -n "$release_version" ]]; then
             printf "Remote tag 'v%s' already points to this split commit.\n" "$release_version"
         fi
