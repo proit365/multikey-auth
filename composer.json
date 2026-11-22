@@ -19,6 +19,9 @@
     "proit365/multikey-auth-core": "^1.0",
     "proit365/multikey-auth-server": "^1.0"
   },
+  "require-dev": {
+    "ext-pdo_sqlite": "*"
+  },
   "autoload": {
     "psr-4": {
       "ProIT365\\MultiKeyAuth\\Cli\\": "src/"
