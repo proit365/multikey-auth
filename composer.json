@@ -1,6 +1,6 @@
 {
     "name": "proit365/multikey-auth-core",
-    "description": "Framework-independent cryptographic core for ProIT365 MultiKey Auth MKAP v1",
+    "description": "PHP cryptographic and key-management core for ProIT365 MultiKey Auth (MKAP), implementing protocol primitives, key pools, exports, and storage adapters.",
     "homepage": "https://github.com/proit365/multikey-auth",
     "keywords": ["authentication", "cryptography", "mkap", "proit365"],
     "type": "library",
