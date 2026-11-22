@@ -1,0 +1,26 @@
+{
+  "name": "@realmatrix/multikey-auth",
+  "version": "1.0.0",
+  "description": "Server-side JavaScript SDK for ProIT365 MultiKey Auth MKAP v1",
+  "main": "src/index.js",
+  "types": "types/index.d.ts",
+  "license": "MIT",
+  "homepage": "https://github.com/proit365/multikey-auth",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/proit365/multikey-auth.git"
+  },
+  "engines": {
+    "node": ">=12"
+  },
+  "scripts": {
+    "test": "node test/interoperability.test.js"
+  },
+  "keywords": [
+    "mkap",
+    "authentication",
+    "challenge-response",
+    "hmac",
+    "hkdf"
+  ]
+}

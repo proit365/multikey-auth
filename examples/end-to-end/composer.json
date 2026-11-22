@@ -1,0 +1,33 @@
+{
+  "name": "proit365/multikey-auth-end-to-end-example",
+  "description": "Local PHP server and Node.js client example for MKAP v1",
+  "type": "project",
+  "license": "MIT",
+  "require": {
+    "php": "^8.2",
+    "realmatrix/multikey-auth-core": "^1.0",
+    "realmatrix/multikey-auth-server": "^1.0"
+  },
+  "repositories": [
+    {
+      "type": "path",
+      "url": "../../packages/core",
+      "options": {
+        "versions": {
+          "realmatrix/multikey-auth-core": "1.0.x-dev"
+        }
+      }
+    },
+    {
+      "type": "path",
+      "url": "../../packages/server",
+      "options": {
+        "versions": {
+          "realmatrix/multikey-auth-server": "1.0.x-dev"
+        }
+      }
+    }
+  ],
+  "minimum-stability": "dev",
+  "prefer-stable": true
+}

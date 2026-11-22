@@ -1,0 +1,26 @@
+{
+    "name": "realmatrix/multikey-auth-core",
+    "description": "Framework-independent cryptographic core for ProIT365 MultiKey Auth MKAP v1",
+    "homepage": "https://github.com/proit365/multikey-auth",
+    "type": "library",
+    "license": "MIT",
+    "require": {
+        "php": "^8.2"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^11.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "ProIT365\\MultiKeyAuth\\Core\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "ProIT365\\MultiKeyAuth\\Core\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "test": "phpunit"
+    }
+}

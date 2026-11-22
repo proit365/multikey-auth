@@ -1,0 +1,60 @@
+{
+  "name": "realmatrix/laravel-multikey-auth",
+  "description": "Laravel 12 client integration for ProIT365 MultiKey Auth MKAP v1",
+  "homepage": "https://github.com/proit365/multikey-auth",
+  "type": "library",
+  "license": "MIT",
+  "require": {
+    "php": "^8.2",
+    "illuminate/http": "^12.0",
+    "illuminate/support": "^12.0",
+    "realmatrix/multikey-auth": "^1.0"
+  },
+  "require-dev": {
+    "orchestra/testbench": "^10.0",
+    "phpunit/phpunit": "^11.5"
+  },
+  "repositories": [
+    {
+      "type": "path",
+      "url": "../client-php",
+      "options": {
+        "versions": {
+          "realmatrix/multikey-auth": "1.0.x-dev"
+        }
+      }
+    },
+    {
+      "type": "path",
+      "url": "../core",
+      "options": {
+        "versions": {
+          "realmatrix/multikey-auth-core": "1.0.x-dev"
+        }
+      }
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "ProIT365\\MultiKeyAuth\\LaravelClient\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "ProIT365\\MultiKeyAuth\\LaravelClient\\Tests\\": "tests/"
+    }
+  },
+  "scripts": {
+    "test": "phpunit"
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "ProIT365\\MultiKeyAuth\\LaravelClient\\MultiKeyAuthClientServiceProvider"
+      ],
+      "aliases": {
+        "MKAP": "ProIT365\\MultiKeyAuth\\LaravelClient\\Facades\\MKAP"
+      }
+    }
+  }
+}

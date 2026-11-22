@@ -1,0 +1,45 @@
+# ProIT365 MultiKey Auth
+
+ProIT365 MultiKey Auth (MKAP) is an initial-development multi-key
+challenge-response authentication protocol and ecosystem for API requests.
+
+Repository: https://github.com/proit365/multikey-auth
+Publisher: https://proit365.com
+
+## Implemented repository content
+
+- MKAP v1 protocol specification
+- PHP cryptographic core
+- PHP key pool and lifecycle implementation
+- AES-256-GCM server-side secret storage
+- PDO and mysqli key repository adapters
+- SQLite and MySQL migrations
+- Framework-independent challenge issuer and verifier
+- PHP client SDK
+- Laravel 12 server package
+- Laravel 12 client package
+- Server-side JavaScript/Node.js SDK
+- Dart/Flutter SDK
+- Administrative CLI
+- Documentation and security limitations
+
+## Security status
+
+MKAP is custom authentication protocol material under development. It has not
+received an independent security review and is not production-ready. A
+complete client export compromise permits impersonation. Browser JavaScript
+must not hold a complete secret pool.
+
+## Canonical resources
+
+- specification/mkap-v1.md
+- specification/test-vectors-v1.json
+- docs/index.md
+- docs/protocol.md
+- docs/security.md
+- SECURITY.md
+- THREAT_MODEL.md
+- KNOWN_LIMITATIONS.md
+
+Do not represent suggested proit365.com product/documentation URLs as published
+website pages unless they are actually published.
