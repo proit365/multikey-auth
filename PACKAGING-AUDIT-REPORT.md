@@ -3,7 +3,8 @@
 ## Final status — Batches 1–6
 
 **Status:** All remaining local preparation and validation batches are complete.  
-**Repository:** `proit365/multikey-auth` monorepo, branch `main`, HEAD `53632e8`.  
+**Repository:** `proit365/multikey-auth` monorepo, branch `main`.
+**Audit baseline:** `53632e8`. **Current owner-authored commit:** `a0be5e4`.
 **Audit date:** 2026-11-22.
 
 This report distinguishes **VERIFIED** facts (confirmed from files or executed commands), **INFERRED** interpretations, **PLANNED** work described in project materials, and **UNKNOWN** items that cannot be established locally. No credentials or secret values are included.
@@ -41,7 +42,7 @@ There is no root `composer.json`; `composer.dev.json` is the development workspa
 
 ### Git and release state
 
-- **VERIFIED:** The working tree was clean before the audit records were created. HEAD was `53632e8` on `main`; no local tags were listed.
+- **VERIFIED:** The working tree was clean at audit start on `main`, HEAD `53632e8`, with no local tags. The owner later committed the preparation as `a0be5e4`; it has not been pushed.
 - **VERIFIED:** The main monorepo is the development source. Package directories are the sources for subtree splits. Split trees were computed from committed HEAD for verification; no split push or remote action was run.
 - **VERIFIED:** The separate `update.bat` helper stages all changes, commits and pushes `main`, then pushes package splits. It was inspected but not run. Its broad staging and automatic push behavior makes it unsuitable as an unattended release command without further safeguards.
 - **INFERRED:** `git subtree split` produces a package-root history from tracked files and preserves relevant package history; ignored/untracked local files are not part of that split.
@@ -159,14 +160,15 @@ remaining batches are recorded in the completion table that follows.
 | `bash -n` and split-script `--help` | **PASS** |
 | `git subtree split` for each committed package prefix at HEAD `53632e8` | **PASS** — each split tree matched its source prefix tree; no refs were pushed or created |
 | `git diff --check` | **PASS** |
-| Full release-script preview against the modified worktree | **NOT RUN** — the script requires a clean, committed `main` worktree; the changes remain uncommitted |
+| Full release-script preview, `--package all`, at owner commit `a0be5e4` | **PASS** — all six package splits and safety preflights completed without `--push` |
 
 Two preliminary standalone CLI harness attempts exposed harness setup mistakes:
 one disallowed the local `1.0.x-dev` path versions, and one placed the package
 inside a monorepo-shaped temporary path so the test intentionally selected its
 monorepo schema comparison. Both were corrected; the flattened standalone
 checkout test passed. The Laravel TLS failure is an environment/dependency
-resolution blocker, not a passing test.
+resolution issue that was resolved after the firewall check; the retry passed
+with TLS verification enabled.
 
 ## 8. Completed batches and files changed
 
@@ -188,10 +190,11 @@ Files changed or added:
 - `tools/release/split-packages.sh`, `tools/release/README.md`
 - `PACKAGING-AUDIT-REPORT.md`, `packaging-audit-progress.json`
 
-No runtime source, protocol, or cryptographic code was changed. There were no
-commits, pushes, tags, remote repository changes, package registrations, or
-publications. The branch and HEAD remain `main` / `53632e8`; the preparation
-changes are local and uncommitted.
+No runtime source, protocol, or cryptographic code was changed. The repository
+owner committed the preparation as `a0be5e4`; I did not create or amend that
+commit. No pushes, tags, remote repository changes, package registrations, or
+publications were performed. The post-commit test-result and audit-metadata
+updates are local and uncommitted.
 
 ## 9. Remaining owner actions and limitations
 
@@ -201,8 +204,8 @@ changes are local and uncommitted.
    distribution repositories are created; local Laravel/Testbench checks now pass.
 3. Confirm whether `ProIT365\MultiKeyAuth\Core\Server\` is the intended public
    Server namespace; changing it later would be a compatibility decision.
-4. Review and commit the local preparation changes, then run the split script's
-   full preview from a clean `main` worktree and inspect each resulting package.
+4. Review and commit the post-commit audit metadata updates, then inspect the
+   six split outputs from the successful preview before any push.
 5. After owner approval, release in dependency order, register the Composer
    repositories on Packagist, and optionally create GitHub Releases from verified
    tags. JavaScript and Flutter publication remain separate.

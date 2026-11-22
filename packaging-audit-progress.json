@@ -4,7 +4,9 @@
   "repository": "https://github.com/proit365/multikey-auth",
   "audit_date": "2026-11-22",
   "branch": "main",
-  "head": "53632e8",
+  "baseline_head": "53632e8",
+  "head": "a0be5e4",
+  "owner_commit": "a0be5e49b0e0621f77560e9e2ccefe53d4b6e25e",
   "overall_status": "locally_prepared_pending_owner_actions",
   "current_batch": 6,
   "current_batch_status": "completed_pending_owner_actions",
@@ -44,7 +46,7 @@
       "number": 6,
       "name": "Release mapping and final audit",
       "status": "completed_pending_owner_actions",
-      "scope": "Aligned PHP-client split target, strengthened package exclusions, verified committed subtree projections, and updated final audit records. Full preview requires clean committed main."
+      "scope": "Aligned PHP-client split target, strengthened package exclusions, verified committed subtree projections, and passed the full non-pushing preview at owner commit a0be5e4."
     }
   ],
   "packages": {
@@ -147,6 +149,11 @@
       "details": "All split trees matched their corresponding committed package prefix trees; no refs were pushed or created."
     },
     {
+      "check": "Full split-packages.sh preview for all six packages at HEAD a0be5e4",
+      "status": "passed",
+      "details": "All path/tree/secret preflights passed without --push. Core=1229a213; Server=383cd2cf; PHP Client=4883dc28; Laravel Server=1ed3bf13; Laravel Client=737c71b3; CLI=2af73898."
+    },
+    {
       "check": "git diff --check",
       "status": "passed"
     },
@@ -157,8 +164,8 @@
     },
     {
       "check": "Full release-script preview against modified worktree",
-      "status": "not_run",
-      "details": "Script requires a clean committed main worktree; local changes remain uncommitted."
+      "status": "passed",
+      "details": "Run from clean owner commit a0be5e4 with --package all and no --push."
     }
   ],
   "external_actions": {
@@ -169,7 +176,8 @@
     "github_releases_created": false,
     "remote_tags_or_releases_created": false,
     "pushes_performed": false,
-    "commits_performed": false,
+    "assistant_commits_performed": false,
+    "owner_commit_observed": "a0be5e49b0e0621f77560e9e2ccefe53d4b6e25e",
     "update_bat_executed": false
   },
   "files_created": [
@@ -201,5 +209,5 @@
     "tools/release/README.md"
   ],
   "package_source_files_changed": [],
-  "next_action": "External release actions remain owner-controlled: approve versions, create repositories, resolve Composer TLS, and publish only after clean-worktree preview and review."
+  "next_action": "External release actions remain owner-controlled: approve versions, create repositories, and publish only after reviewing the successful split preview."
 }
