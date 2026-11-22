@@ -1,0 +1,25 @@
+{
+    "name": "realmatrix/multikey-auth-server",
+    "description": "Framework-independent MKAP challenge issuer and authentication verifier",
+    "homepage": "https://github.com/proit365/multikey-auth",
+    "type": "library",
+    "license": "MIT",
+    "require": {
+        "php": "^8.2",
+        "realmatrix/multikey-auth-core": "^1.0"
+    },
+    "repositories": [{
+        "type": "path",
+        "url": "../core",
+        "options": {
+            "versions": {
+                "realmatrix/multikey-auth-core": "1.0.x-dev"
+            }
+        }
+    }],
+    "autoload": {
+        "psr-4": {
+            "ProIT365\\MultiKeyAuth\\Core\\Server\\": "src/Server/"
+        }
+    }
+}
