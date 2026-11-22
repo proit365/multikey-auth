@@ -1,6 +1,6 @@
 {
     "name": "proit365/multikey-auth-server",
-    "description": "Framework-independent MKAP challenge issuer and authentication verifier",
+    "description": "Framework-independent PHP server library for ProIT365 MultiKey Auth (MKAP), providing challenge issuance and request proof verification.",
     "homepage": "https://github.com/proit365/multikey-auth",
     "keywords": ["authentication", "mkap", "php", "server", "proit365"],
     "type": "library",
