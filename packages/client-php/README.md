@@ -4,6 +4,16 @@
 server. It validates client exports, obtains a challenge, derives the proof
 internally, and returns the target API's normal HTTP response.
 
+## Installation
+
+After the package and its Core dependency are available from Packagist:
+
+```shell
+composer require proit365/multikey-auth:^1.0
+```
+
+The package requires PHP `^8.2`; Core requires the OpenSSL PHP extension.
+
 ## Usage
 
 ```php
@@ -50,3 +60,11 @@ after the server has already authorized the request.
 The SDK keeps validated secrets in memory for the lifetime of the loaded pool.
 Protect the export and process memory appropriately. A complete export
 compromise allows client impersonation.
+
+## Source and support
+
+Project website: [https://www.proit365.com](https://www.proit365.com).
+
+The monorepo is the development source of truth:
+[github.com/proit365/multikey-auth](https://github.com/proit365/multikey-auth).
+Report issues through its [issue tracker](https://github.com/proit365/multikey-auth/issues).

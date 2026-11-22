@@ -88,7 +88,7 @@ package_repository() {
     case "$1" in
         core) printf '%s' 'https://github.com/proit365/multikey-auth-core.git' ;;
         server) printf '%s' 'https://github.com/proit365/multikey-auth-server.git' ;;
-        client-php) printf '%s' 'https://github.com/proit365/multikey-auth.git' ;;
+        client-php) printf '%s' 'https://github.com/proit365/multikey-auth-php-client.git' ;;
         laravel-server) printf '%s' 'https://github.com/proit365/laravel-multikey-auth-server.git' ;;
         laravel-client) printf '%s' 'https://github.com/proit365/laravel-multikey-auth.git' ;;
         cli) printf '%s' 'https://github.com/proit365/multikey-auth-cli.git' ;;
@@ -159,7 +159,7 @@ if ((push_enabled)) && ((${#selected_packages[@]} != 1)); then
     exit 2
 fi
 
-blocked_path_pattern='(^|/)(vendor|node_modules|\.dart_tool|build|exports)(/|$)|(^|/)(composer\.lock|\.phpunit\.result\.cache)$|\.(sqlite|sqlite3|db|pem|p12|pfx|key)$|(^|/)(PUBLISHING_ARCHITECTURE_PROGRESS|REPOSITORY_TECHNICAL_AUDIT)\.md$|client-export|master-key|(^|/)[^/]+\.local\.(php|json|ya?ml)$'
+blocked_path_pattern='(^|/)(vendor|node_modules|\.dart_tool|build|exports)(/|$)|(^|/)(composer(\.dev)?\.lock|\.phpunit\.result\.cache)$|\.(sqlite|sqlite3|db)(-(wal|shm))?$|\.(pem|p12|pfx|key|p8|jks|keystore)$|(^|/)(PUBLISHING_ARCHITECTURE_PROGRESS|REPOSITORY_TECHNICAL_AUDIT|PACKAGING-AUDIT-REPORT)\.md$|(^|/)packaging-audit-progress\.json$|client[-_]export|master-key|(^|/)[^/]+\.local\.(php|json|ya?ml|toml)$'
 secret_content_pattern='-----BEGIN (RSA |EC |OPENSSH )?PRIVATE KEY-----|AKIA[0-9A-Z]{16}|gh[pousr]_[A-Za-z0-9_]{20,}'
 
 for package in "${selected_packages[@]}"; do

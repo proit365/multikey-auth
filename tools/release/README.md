@@ -18,15 +18,16 @@ rewrite source history or merge work from a distribution repository.
 |---|---|---|
 | `packages/core` | `proit365/multikey-auth-core` | `proit365/multikey-auth-core` |
 | `packages/server` | `proit365/multikey-auth-server` | `proit365/multikey-auth-server` |
-| `packages/client-php` | `proit365/multikey-auth` | `proit365/multikey-auth` |
+| `packages/client-php` | `proit365/multikey-auth-php-client` | `proit365/multikey-auth` |
 | `packages/laravel-server` | `proit365/laravel-multikey-auth-server` | `proit365/laravel-multikey-auth-server` |
 | `packages/laravel-client` | `proit365/laravel-multikey-auth` | `proit365/laravel-multikey-auth` |
 | `packages/cli` | `proit365/multikey-auth-cli` | `proit365/multikey-auth-cli` |
 
-**Blocking mapping conflict:** `proit365/multikey-auth` is already the
-authoritative monorepo repository. The split script refuses to push the PHP
-client there. Keep the confirmed Composer name, but supply a distinct GitHub
-repository slug before synchronizing that package.
+The PHP-client Composer package name remains `proit365/multikey-auth`; its
+distribution repository is `proit365/multikey-auth-php-client`. The latter is
+distinct from the authoritative monorepo repository. The distribution
+repositories remain one-way projections and must not become development
+sources.
 
 The script handles only the six Composer packages. JavaScript remains an npm
 package (`@proit365/multikey-auth`) and Flutter remains a pub.dev package
@@ -90,11 +91,9 @@ separate release gates listed in [RELEASE_CHECKLIST.md](../../RELEASE_CHECKLIST.
 Release dependencies before their consumers:
 
 1. `core`
-2. `server`
-3. `client-php`
-4. `laravel-server`
-5. `cli`
-6. `laravel-client`
+2. `server` and `client-php`
+3. `laravel-server` and `cli`
+4. `laravel-client`
 
 The server and PHP client both depend on core; Laravel server and CLI depend on
 server/core; Laravel client depends on the PHP client. Existing constraints are
@@ -137,6 +136,10 @@ it creates the matching tag. It accepts one pushed package per invocation.
 Never initialize a distribution repository with a competing README/license
 commit: the first subtree push expects an empty repository. A normal push will
 reject unrelated or divergent history rather than overwrite it.
+
+After verifying the pushed branch and `vX.Y.Z` tag, create a GitHub Release
+from that tag in the package's distribution repository if a release page is
+desired. The local script creates tags only; it does not create GitHub Releases.
 
 Before each push:
 

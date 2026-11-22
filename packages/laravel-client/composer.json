@@ -2,8 +2,14 @@
   "name": "proit365/laravel-multikey-auth",
   "description": "Laravel 12 client integration for ProIT365 MultiKey Auth MKAP v1",
   "homepage": "https://github.com/proit365/multikey-auth",
+  "keywords": ["authentication", "client", "laravel", "mkap", "php", "proit365"],
   "type": "library",
   "license": "MIT",
+  "support": {
+    "issues": "https://github.com/proit365/multikey-auth/issues",
+    "source": "https://github.com/proit365/multikey-auth/tree/main/packages/laravel-client",
+    "docs": "https://github.com/proit365/multikey-auth/tree/main/packages/laravel-client"
+  },
   "require": {
     "php": "^8.2",
     "illuminate/http": "^12.0",

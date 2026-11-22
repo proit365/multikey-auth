@@ -1,0 +1,205 @@
+{
+  "schema_version": 1,
+  "project": "ProIT365 MultiKey Auth",
+  "repository": "https://github.com/proit365/multikey-auth",
+  "audit_date": "2026-11-22",
+  "branch": "main",
+  "head": "53632e8",
+  "overall_status": "locally_prepared_pending_owner_actions",
+  "current_batch": 6,
+  "current_batch_status": "completed_pending_owner_actions",
+  "next_batch": null,
+  "batches": [
+    {
+      "number": 1,
+      "name": "Repository and package baseline",
+      "status": "completed",
+      "scope": "Inspect repository, Git state, package manifests, dependencies, tests, release tooling, and perform initial local validation. Do not modify package source."
+    },
+    {
+      "number": 2,
+      "name": "Package licenses and Core documentation",
+      "status": "completed",
+      "scope": "Added package-root MIT licenses to all six Composer packages and created the Core README."
+    },
+    {
+      "number": 3,
+      "name": "CLI documentation and executable behavior",
+      "status": "completed",
+      "scope": "Corrected unsupported protected-export guidance; standalone CLI install, test script, and executable help passed."
+    },
+    {
+      "number": 4,
+      "name": "Package documentation and Composer metadata",
+      "status": "completed",
+      "scope": "Updated package READMEs and Composer keywords/support metadata; normalized root README encoding and corrected stale claims."
+    },
+    {
+      "number": 5,
+      "name": "Standalone package validation",
+      "status": "completed",
+      "scope": "Validated all six Composer packages locally; Laravel server/client installs and Testbench suites passed after firewall inspection. JavaScript and Flutter checks passed."
+    },
+    {
+      "number": 6,
+      "name": "Release mapping and final audit",
+      "status": "completed_pending_owner_actions",
+      "scope": "Aligned PHP-client split target, strengthened package exclusions, verified committed subtree projections, and updated final audit records. Full preview requires clean committed main."
+    }
+  ],
+  "packages": {
+    "packages/core": {
+      "composer_name": "proit365/multikey-auth-core",
+      "distribution_repository": "proit365/multikey-auth-core",
+      "audit_status": "completed",
+      "remaining_findings": [],
+      "validation": "Composer strict validation passed; PHPUnit passed with 9 tests and 20 assertions; README and MIT license added."
+    },
+    "packages/server": {
+      "composer_name": "proit365/multikey-auth-server",
+      "distribution_repository": "proit365/multikey-auth-server",
+      "audit_status": "completed",
+      "remaining_findings": [
+        "Confirm the public ProIT365\\MultiKeyAuth\\Core\\Server namespace is intentional",
+        "No package-specific Composer test script is declared"
+      ],
+      "validation": "Composer strict validation passed; included in successful clean local consumer dependency resolution and autoload check; README and MIT license added."
+    },
+    "packages/client-php": {
+      "composer_name": "proit365/multikey-auth",
+      "distribution_repository": "proit365/multikey-auth-php-client",
+      "audit_status": "completed",
+      "remaining_findings": [
+        "No package-specific Composer test script is declared"
+      ],
+      "validation": "Composer strict validation passed; included in successful clean local consumer dependency resolution and autoload check; README and MIT license added; split mapping corrected."
+    },
+    "packages/laravel-server": {
+      "composer_name": "proit365/laravel-multikey-auth-server",
+      "distribution_repository": "proit365/laravel-multikey-auth-server",
+      "audit_status": "completed",
+      "remaining_findings": [
+        "Published registry install cannot be verified until repositories and tags exist"
+      ],
+      "validation": "Composer strict validation passed; clean consumer install and Testbench passed (2 tests, 9 assertions) after firewall inspection; README and MIT license added."
+    },
+    "packages/laravel-client": {
+      "composer_name": "proit365/laravel-multikey-auth",
+      "distribution_repository": "proit365/laravel-multikey-auth",
+      "audit_status": "completed",
+      "remaining_findings": [
+        "Published registry install cannot be verified until repositories and tags exist"
+      ],
+      "validation": "Composer strict validation passed; clean consumer install and Testbench passed (4 tests, 6 assertions) after firewall inspection; README and MIT license added."
+    },
+    "packages/cli": {
+      "composer_name": "proit365/multikey-auth-cli",
+      "distribution_repository": "proit365/multikey-auth-cli",
+      "audit_status": "completed",
+      "remaining_findings": [],
+      "validation": "Composer strict validation passed; standalone checkout install, composer test, direct binary help, and consumer Composer bin proxy passed; README and MIT license added."
+    }
+  },
+  "validation_results": [
+    {
+      "check": "Strict Composer validation for composer.dev.json, all six package manifests, and examples/end-to-end/composer.json",
+      "status": "passed"
+    },
+    {
+      "check": "php tests/phase13-smoke.php",
+      "status": "passed"
+    },
+    {
+      "check": "Core PHPUnit",
+      "status": "passed",
+      "details": "9 tests, 20 assertions"
+    },
+    {
+      "check": "Local consumer install from clean current package copies for Core, Server, PHP Client, and CLI",
+      "status": "passed",
+      "details": "Packagist disabled; isolated Composer home; path repositories used."
+    },
+    {
+      "check": "Consumer PSR-4 autoload and Composer-installed CLI proxy",
+      "status": "passed",
+      "details": "Four package namespaces autoloaded; php vendor/bin/mkap help succeeded."
+    },
+    {
+      "check": "Standalone CLI checkout installation, composer test, and php bin/mkap help",
+      "status": "passed"
+    },
+    {
+      "check": "JavaScript interoperability package test",
+      "status": "passed"
+    },
+    {
+      "check": "Flutter analysis, tests, and pub.dev publish dry-run",
+      "status": "passed",
+      "details": "Analyze and tests passed; pub.dev dry-run reported zero warnings; no publication occurred."
+    },
+    {
+      "check": "Release split script syntax and help",
+      "status": "passed"
+    },
+    {
+      "check": "git subtree split tree comparison for all six package prefixes at HEAD 53632e8",
+      "status": "passed",
+      "details": "All split trees matched their corresponding committed package prefix trees; no refs were pushed or created."
+    },
+    {
+      "check": "git diff --check",
+      "status": "passed"
+    },
+    {
+      "check": "Laravel/Testbench consumer installation and test suites",
+      "status": "passed",
+      "details": "After user checked the firewall, clean local consumer installs resolved dependencies with TLS enabled; Server passed 2 tests/9 assertions and Client passed 4 tests/6 assertions."
+    },
+    {
+      "check": "Full release-script preview against modified worktree",
+      "status": "not_run",
+      "details": "Script requires a clean committed main worktree; local changes remain uncommitted."
+    }
+  ],
+  "external_actions": {
+    "github_repositories_created": false,
+    "packagist_registered_or_published": false,
+    "npm_published": false,
+    "pub_dev_published": false,
+    "github_releases_created": false,
+    "remote_tags_or_releases_created": false,
+    "pushes_performed": false,
+    "commits_performed": false,
+    "update_bat_executed": false
+  },
+  "files_created": [
+    "packages/core/LICENSE",
+    "packages/server/LICENSE",
+    "packages/client-php/LICENSE",
+    "packages/laravel-server/LICENSE",
+    "packages/laravel-client/LICENSE",
+    "packages/cli/LICENSE",
+    "packages/core/README.md",
+    "PACKAGING-AUDIT-REPORT.md",
+    "packaging-audit-progress.json"
+  ],
+  "files_modified": [
+    "README.md",
+    "RELEASE_CHECKLIST.md",
+    "packages/server/README.md",
+    "packages/client-php/README.md",
+    "packages/laravel-server/README.md",
+    "packages/laravel-client/README.md",
+    "packages/cli/README.md",
+    "packages/core/composer.json",
+    "packages/server/composer.json",
+    "packages/client-php/composer.json",
+    "packages/laravel-server/composer.json",
+    "packages/laravel-client/composer.json",
+    "packages/cli/composer.json",
+    "tools/release/split-packages.sh",
+    "tools/release/README.md"
+  ],
+  "package_source_files_changed": [],
+  "next_action": "External release actions remain owner-controlled: approve versions, create repositories, resolve Composer TLS, and publish only after clean-worktree preview and review."
+}

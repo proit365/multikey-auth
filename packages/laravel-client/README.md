@@ -1,10 +1,18 @@
 # Laravel Client Package
 
 `proit365/laravel-multikey-auth` integrates the PHP MKAP client with Laravel
-12. It publishes configuration and exposes the client through dependency
-injection or the `MKAP` facade.
+12. It requires PHP `^8.2` and Laravel 12, publishes configuration, and exposes
+the client through dependency injection or the `MKAP` facade.
 
 ## Installation
+
+After the package and its PHP client dependency are available from Packagist:
+
+```shell
+composer require proit365/laravel-multikey-auth:^1.0
+```
+
+Then publish its configuration:
 
 ```shell
 php artisan vendor:publish --tag=mkap-client-config
@@ -42,3 +50,20 @@ public function handle(
 
 The package exposes challenge and malformed-response exceptions from the PHP
 client. API `401` responses are returned unchanged and are not replayed.
+
+## Tests
+
+From a clean package checkout, install development dependencies and run:
+
+```shell
+composer install
+composer test
+```
+
+## Source and support
+
+Project website: [https://www.proit365.com](https://www.proit365.com).
+
+The monorepo is the development source of truth:
+[github.com/proit365/multikey-auth](https://github.com/proit365/multikey-auth).
+Report issues through its [issue tracker](https://github.com/proit365/multikey-auth/issues).

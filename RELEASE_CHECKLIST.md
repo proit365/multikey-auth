@@ -16,10 +16,8 @@
 
 ## Multi-repository distribution readiness
 
-- [ ] Resolve the PHP-client distribution repository collision with the
-      authoritative `proit365/multikey-auth` monorepo.
-- [ ] Create the five non-conflicting distribution repositories as empty
-      repositories; do not seed them with unrelated commits.
+- [ ] Confirm the six distribution repositories exist and are empty or have
+      only the exact split history; do not seed them with unrelated commits.
 - [ ] Commit source changes, use a clean `main` worktree, and validate the
       `composer.dev.json` workspace with TLS verification enabled.
 - [ ] Run `php tests/phase13-smoke.php`, the package-specific PHPUnit suites,
@@ -35,6 +33,8 @@
       distribution tag points to the reviewed split commit.
 - [ ] Register the Composer repositories on Packagist and verify update hooks
       only after the repositories and first tags exist.
+- [ ] If desired, create a GitHub Release from each verified distribution tag;
+      the local split script creates tags but does not create GitHub Releases.
 - [ ] Keep JavaScript/npm and Flutter/pub.dev releases separate from Composer
       subtree synchronization.
 

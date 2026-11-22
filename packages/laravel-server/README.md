@@ -1,15 +1,20 @@
 # Laravel Server Package
 
 `proit365/laravel-multikey-auth-server` integrates the framework-independent
-MKAP server with Laravel 12. It requires PHP 8.2 or newer; Laravel 13 is not
-supported by this package version. Laravel integration tests are included but
-could not be run in the current environment because Composer could not verify
-Packagist's TLS certificate.
+MKAP server with Laravel 12. It requires PHP `^8.2` and Laravel 12; Laravel 13
+is not supported by this package version.
 
 ## Installation
 
-Install the package in a Laravel 12 application. Laravel package discovery
-registers `MultiKeyAuthServiceProvider`. Publish its configuration and migrate:
+Install the package in a Laravel 12 application after it and its dependencies
+are available from Packagist:
+
+```shell
+composer require proit365/laravel-multikey-auth-server:^1.0
+```
+
+Laravel package discovery registers `MultiKeyAuthServiceProvider`. Publish its
+configuration and migrate:
 
 ```shell
 php artisan vendor:publish --tag=mkap-config
@@ -69,3 +74,20 @@ Destructive commands require confirmation unless `--force` is supplied.
 Only the challenge endpoint is registered by this package, and only when
 explicitly enabled. Unrelated application routes are not protected
 automatically.
+
+## Tests
+
+From a clean package checkout, install development dependencies and run:
+
+```shell
+composer install
+composer test
+```
+
+## Source and support
+
+Project website: [https://www.proit365.com](https://www.proit365.com).
+
+The monorepo is the development source of truth:
+[github.com/proit365/multikey-auth](https://github.com/proit365/multikey-auth).
+Report issues through its [issue tracker](https://github.com/proit365/multikey-auth/issues).

@@ -2,8 +2,14 @@
   "name": "proit365/multikey-auth",
   "description": "PHP client SDK for ProIT365 MultiKey Auth MKAP v1",
   "homepage": "https://github.com/proit365/multikey-auth",
+  "keywords": ["authentication", "client", "mkap", "php", "proit365"],
   "type": "library",
   "license": "MIT",
+  "support": {
+    "issues": "https://github.com/proit365/multikey-auth/issues",
+    "source": "https://github.com/proit365/multikey-auth/tree/main/packages/client-php",
+    "docs": "https://github.com/proit365/multikey-auth/tree/main/packages/client-php"
+  },
   "require": {
     "php": "^8.2",
     "proit365/multikey-auth-core": "^1.0"
