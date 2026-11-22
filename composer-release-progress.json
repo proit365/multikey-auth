@@ -1,0 +1,221 @@
+{
+  "schema_version": 1,
+  "project": "ProIT365 MultiKey Auth Composer Release",
+  "audit_date": "2026-11-22",
+  "last_updated": "2026-11-22T08:26:21+02:00",
+  "repository": "https://github.com/proit365/multikey-auth",
+  "local_repository": "Q:\\proit365-multikey-auth\\project-proit365-multikey-auth\\proit365-multikey-auth",
+  "branch": "main",
+  "head": "b4fd54311f2c24d4ac651336c16c82c4e3289358",
+  "origin_main": "3d19ebfaaca04c7143aafa20a5a30f71ac718941",
+  "worktree_clean_before_audit_files": true,
+  "overall_status": "local_preparation_complete_blocked_before_publication",
+  "current_batch": 4,
+  "current_batch_status": "blocked_by_release_gates_and_owner_approval",
+  "next_batch": 5,
+  "batches": [
+    {
+      "number": 1,
+      "name": "Inspect and audit",
+      "status": "completed",
+      "changes": [
+        "Created this progress file and COMPOSER-RELEASE-REPORT.md only."
+      ],
+      "validation": [
+        "All six local package composer.json files passed composer validate --strict --no-check-publish.",
+        "The subtree split script passed bash -n and --help.",
+        "All six GitHub distribution repositories and their main refs were checked read-only.",
+        "Packagist package detail metadata was checked read-only for all six package names."
+      ],
+      "external_actions": {
+        "pushes": false,
+        "tags_or_releases_created": false,
+        "packages_registered_or_published": false,
+        "remote_repositories_created_or_modified": false
+      }
+    },
+    {
+      "number": 2,
+      "name": "Correct packaging issues",
+      "status": "completed",
+      "changes": [
+        "Confirmed all six package LICENSE files match the root MIT license and copyright notice.",
+        "Confirmed the Core README and corrected CLI installation/export documentation are present.",
+        "Declared ext-pdo_sqlite as a CLI development requirement for its in-memory SQLite test.",
+        "Updated the split publisher to create annotated tags and reject existing lightweight tags.",
+        "Pinned the release shell script to LF so it runs from a Windows checkout."
+      ],
+      "validation": [
+        "All six Composer manifests passed strict validation.",
+        "CLI package tests, Core tests, PHP smoke checks, and both Laravel Testbench suites passed.",
+        "Annotated tag object creation and push were verified against an isolated local bare repository."
+      ]
+    },
+    {
+      "number": 3,
+      "name": "Validate packages and prepare distribution updates",
+      "status": "completed",
+      "changes": [
+        "Created local source commits 8859a6d and b4fd543; neither was pushed.",
+        "Previewed all six subtree split commits from a clean isolated clone.",
+        "Verified every current distribution main is an ancestor of its proposed split commit."
+      ],
+      "validation": [
+        "All six split trees passed the release script's tree and content preflight.",
+        "All six source-to-distribution mappings were confirmed, including PHP client to multikey-auth-php-client.",
+        "Packagist source URLs and current dev-main metadata were checked for all six packages."
+      ]
+    },
+    {
+      "number": 4,
+      "name": "Prepare stable release commits and tags",
+      "status": "blocked",
+      "notes": "No stable tags were created. The project RELEASE_CHECKLIST.md still has required release gates outstanding, Packagist has no stable package versions, and explicit approval is required before pushes or stable tags."
+    },
+    {
+      "number": 5,
+      "name": "Publish tags and verify Packagist",
+      "status": "blocked",
+      "notes": "No push or publication occurred. Requires remaining release gates and explicit owner approval. Packagist update-hook configuration is not publicly visible."
+    },
+    {
+      "number": 6,
+      "name": "Test clean Composer installations and finalize",
+      "status": "blocked",
+      "notes": "Stable ^1.0 Packagist installation cannot be verified until approved tags are published and indexed. Do not claim install success."
+    }
+  ],
+  "root_cause": "Packagist currently exposes only dev-main for all six packages. No stable Git tags exist in the six distribution repositories, so ^1.0 cannot select a stable version. Transitive packages also require stable ^1.0 versions.",
+  "dependency_order": [
+    "proit365/multikey-auth-core",
+    "proit365/multikey-auth-server",
+    "proit365/multikey-auth",
+    "proit365/laravel-multikey-auth-server",
+    "proit365/laravel-multikey-auth",
+    "proit365/multikey-auth-cli"
+  ],
+  "packages": {
+    "packages/core": {
+      "composer_name": "proit365/multikey-auth-core",
+      "distribution_repository": "proit365/multikey-auth-core",
+      "github_main": "1229a2138889c8d3d2de6a6d4664d069c016bfd4",
+      "prepared_split_commit": "1229a2138889c8d3d2de6a6d4664d069c016bfd4",
+      "packagist_versions": ["dev-main"],
+      "packagist_dev_main_reference": "1229a2138889c8d3d2de6a6d4664d069c016bfd4",
+      "stable_tags": [],
+      "requires": {
+        "php": "^8.2",
+        "ext-openssl": "*"
+      },
+      "validation": "composer validate passed"
+    },
+    "packages/server": {
+      "composer_name": "proit365/multikey-auth-server",
+      "distribution_repository": "proit365/multikey-auth-server",
+      "github_main": "383cd2cf7d27f80f624954a268f2aee4bb525276",
+      "prepared_split_commit": "383cd2cf7d27f80f624954a268f2aee4bb525276",
+      "packagist_versions": ["dev-main"],
+      "packagist_dev_main_reference": "383cd2cf7d27f80f624954a268f2aee4bb525276",
+      "stable_tags": [],
+      "requires": {
+        "php": "^8.2",
+        "proit365/multikey-auth-core": "^1.0"
+      },
+      "validation": "composer validate passed"
+    },
+    "packages/client-php": {
+      "composer_name": "proit365/multikey-auth",
+      "distribution_repository": "proit365/multikey-auth-php-client",
+      "github_main": "4883dc28c28d40fc44d236acf35272db0219eb8c",
+      "prepared_split_commit": "4883dc28c28d40fc44d236acf35272db0219eb8c",
+      "packagist_versions": ["dev-main"],
+      "packagist_dev_main_reference": "4883dc28c28d40fc44d236acf35272db0219eb8c",
+      "stable_tags": [],
+      "requires": {
+        "php": "^8.2",
+        "proit365/multikey-auth-core": "^1.0"
+      },
+      "validation": "composer validate passed"
+    },
+    "packages/laravel-server": {
+      "composer_name": "proit365/laravel-multikey-auth-server",
+      "distribution_repository": "proit365/laravel-multikey-auth-server",
+      "github_main": "1ed3bf13f7576f0b75f9bb7c36d64a03d656c049",
+      "prepared_split_commit": "1ed3bf13f7576f0b75f9bb7c36d64a03d656c049",
+      "packagist_versions": ["dev-main"],
+      "packagist_dev_main_reference": "1ed3bf13f7576f0b75f9bb7c36d64a03d656c049",
+      "stable_tags": [],
+      "requires": {
+        "php": "^8.2",
+        "ext-pdo": "*",
+        "illuminate/cache": "^12.0",
+        "illuminate/console": "^12.0",
+        "illuminate/database": "^12.0",
+        "illuminate/routing": "^12.0",
+        "illuminate/support": "^12.0",
+        "proit365/multikey-auth-server": "^1.0"
+      },
+      "validation": "composer validate passed"
+    },
+    "packages/laravel-client": {
+      "composer_name": "proit365/laravel-multikey-auth",
+      "distribution_repository": "proit365/laravel-multikey-auth",
+      "github_main": "737c71b39c799e4d0539b53524c42b6bd15d2be6",
+      "prepared_split_commit": "737c71b39c799e4d0539b53524c42b6bd15d2be6",
+      "packagist_versions": ["dev-main"],
+      "packagist_dev_main_reference": "737c71b39c799e4d0539b53524c42b6bd15d2be6",
+      "stable_tags": [],
+      "requires": {
+        "php": "^8.2",
+        "illuminate/http": "^12.0",
+        "illuminate/support": "^12.0",
+        "proit365/multikey-auth": "^1.0"
+      },
+      "validation": "composer validate passed"
+    },
+    "packages/cli": {
+      "composer_name": "proit365/multikey-auth-cli",
+      "distribution_repository": "proit365/multikey-auth-cli",
+      "github_main": "2af738985b29468e2fe382d2c601adb993b9662f",
+      "prepared_split_commit": "8bce7df77cad37bad41b29d728a4b244220fbf23",
+      "packagist_versions": ["dev-main"],
+      "packagist_dev_main_reference": "d6e8792d2bc3db443e1ee0fc2b6c4e400b82e261",
+      "stable_tags": [],
+      "requires": {
+        "php": "^8.2",
+        "ext-pdo": "*",
+        "proit365/multikey-auth-core": "^1.0",
+        "proit365/multikey-auth-server": "^1.0"
+      },
+      "require_dev": {
+        "ext-pdo_sqlite": "*"
+      },
+      "validation": "composer validate passed; package test passed"
+    }
+  },
+  "findings": [
+    "Packagist dev-main references match GitHub main for five packages; the CLI Packagist reference d6e8792d2bc3 is stale versus distribution main 2af738985b29. Verify its update hook/indexing.",
+    "The lightweight-tag publisher defect was fixed locally; annotated tags were tested in an isolated bare repository. No production tag was created.",
+    "The PHP client split is correctly mapped to proit365/multikey-auth-php-client; never push it to the monorepo repository.",
+    "The existing parent update.bat stages broadly and pushes the monorepo and package splits without test or stable-version gates; it was inspected but not run.",
+    "Server and PHP client have no package-local Composer test scripts or dev test dependencies; use the monorepo test suite as a release gate or confirm whether portable package tests are required.",
+    "The release checklist still requires live integration/concurrency tests, an independent security review, protected-export interoperability, shared production rate limiting, and master-key/secure-export workflow verification.",
+    "GitHub pushes and stable tags remain unapproved; no external action was taken."
+  ],
+  "unverified_or_pending": [
+    "Whether Packagist GitHub hooks or webhooks are configured; this is not publicly visible.",
+    "Stable Packagist versions and clean consumer installation from stable versions.",
+    "Whether 1.0.0 is an appropriate first stable release for every package.",
+    "Packagist GitHub hook status and reason for stale CLI dev-main metadata.",
+    "Completion of project release checklist gates and owner approval for any Git push, tag creation, or publication."
+  ],
+  "files_created": [
+    "composer-release-progress.json",
+    "COMPOSER-RELEASE-REPORT.md"
+  ],
+  "package_source_files_changed": [
+    "packages/cli/composer.json",
+    "packages/cli/README.md"
+  ],
+  "next_action": "Complete the outstanding RELEASE_CHECKLIST.md gates before any stable release. Then obtain explicit approval, publish in dependency order, verify Packagist hooks/indexing, and run clean stable consumer installs."
+}
