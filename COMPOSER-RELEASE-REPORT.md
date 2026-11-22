@@ -1,23 +1,24 @@
 # Composer Release Audit
 
-**Status:** Local preparation and validation are complete; stable publication is
-blocked by outstanding project release gates and the required owner approval.  
+**Status:** All six stable `v1.0.0` tags are published and indexed by Packagist;
+all 12 clean Composer installation checks passed.
 **Audit date:** 2026-11-22  
 **Repository:** `proit365/multikey-auth`, branch `main`  
-**Local HEAD:** `b4fd54311f2c24d4ac651336c16c82c4e3289358`  
-**Origin `main`:** `3d19ebfaaca04c7143aafa20a5a30f71ac718941`; two local commits are
-ahead and have not been pushed.
+**Local HEAD / origin `main`:** `ef90f6b681dbcd8ae7316cf5f2c5f767c6f9dc36`.
+The local release-preparation commits are included in the synchronized
+monorepo branch. All six distribution repositories now carry annotated
+`v1.0.0` tags.
 
 No protocol, cryptographic behavior, or public API was changed. The CLI
-Composer metadata/docs and release tooling were updated. No remote repository
-was modified; no push, stable tag, GitHub Release, or package publication was
-performed.
+Composer metadata/docs and release tooling were updated. The monorepo HEAD is
+synchronized with `origin/main`. Packagist exposes `v1.0.0` for all six
+packages.
 
 ## Current execution summary
 
-- The only confirmed cause of the reported failure remains the absence of
-  stable tags: all six Packagist packages expose only `dev-main`, which cannot
-  satisfy `^1.0`. Laravel Server also needs stable Server and Core dependencies.
+- The original failure was caused by the absence of stable tags. All six
+  `v1.0.0` releases are now on their intended distribution repositories and
+  visible in Packagist metadata.
 - Local commits `8859a6d` and `b4fd543` prepare the CLI test-extension metadata,
   annotated-tag publishing, and Windows shell line endings.
 - All six package manifests pass strict Composer validation. Core, CLI, PHP
@@ -26,56 +27,57 @@ performed.
   distribution `main` is an ancestor of its proposed split commit, so the
   prepared branch updates are fast-forwardable. The PHP client target remains
   `proit365/multikey-auth-php-client`.
-- Stable tags were not created. The project release checklist still requires
-  integration/concurrency checks, independent security review, protected
-  export interoperability, production rate-limiter verification, and
-  master-key/secure-export workflow verification.
-- No stable Packagist installation was attempted or claimed: the necessary
-  versions are not yet published.
+- All six distribution tags and their peeled split commits were verified
+  remotely. The Packagist Composer v2 metadata endpoint exposes `v1.0.0` for
+  each package with the expected internal dependency constraints.
+- All 12 clean consumer installs succeeded using default stable rules:
+  unversioned and `^1.0` requirements for each package. A representative
+  PSR-4 class from every package loaded through Composer autoload.
+- The broader project release checklist still has integration/concurrency,
+  independent security review, protected-export interoperability,
+  production rate-limiter, and master-key/secure-export workflow items open.
 
 ## Confirmed cause of the installation failure
 
 The reported `composer require 'proit365/laravel-multikey-auth-server:^1.0'`
-failure is explained by registry version metadata, not by an established source
+failure was caused by registry version metadata, not by an established source
 code defect:
 
 - All six names are registered on Packagist.
-- The Packagist package detail API currently returns only `dev-main` for each.
-- No Git tags are present in any of the six distribution repositories.
-- A stable `^1.0` constraint does not match `dev-main`.
-- The Laravel server also requires `proit365/multikey-auth-server:^1.0`, which
-  requires `proit365/multikey-auth-core:^1.0`; those stable dependency versions
-  are also unavailable.
+- At the time of the failure, no Git tags were present in the six distribution
+  repositories, so `^1.0` could not match the only available `dev-main`.
+- Laravel Server transitively requires stable Server and Core packages. These
+  dependencies were released first and now resolve from Packagist.
 
-Therefore, adding a Laravel-server tag alone would not satisfy the dependency
-graph. Stable versions must be released in dependency order and then indexed by
-Packagist. The initial version `1.0.0` remains conditional on package readiness;
-no version is assumed or assigned here.
+All six packages were released in dependency order, and Packagist now indexes
+the complete stable dependency graph.
 
 ## Repository and registry snapshot
 
 GitHub search confirmed that the six distribution repositories are public and
 use `main`. Their current remote refs and Packagist metadata are:
 
-| Local directory | Composer package | Distribution repository | GitHub `main` | Prepared split | Packagist version / source ref | Tags |
-|---|---|---|---|---|---|---|
-| `packages/core` | `proit365/multikey-auth-core` | `proit365/multikey-auth-core` | `1229a2138889` | `1229a2138889` | `dev-main` / `1229a2138889` | None |
-| `packages/server` | `proit365/multikey-auth-server` | `proit365/multikey-auth-server` | `383cd2cf7d27` | `383cd2cf7d27` | `dev-main` / `383cd2cf7d27` | None |
-| `packages/client-php` | `proit365/multikey-auth` | `proit365/multikey-auth-php-client` | `4883dc28c28d` | `4883dc28c28d` | `dev-main` / `4883dc28c28d` | None |
-| `packages/laravel-server` | `proit365/laravel-multikey-auth-server` | `proit365/laravel-multikey-auth-server` | `1ed3bf13f757` | `1ed3bf13f757` | `dev-main` / `1ed3bf13f757` | None |
-| `packages/laravel-client` | `proit365/laravel-multikey-auth` | `proit365/laravel-multikey-auth` | `737c71b39c79` | `737c71b39c79` | `dev-main` / `737c71b39c79` | None |
-| `packages/cli` | `proit365/multikey-auth-cli` | `proit365/multikey-auth-cli` | `2af738985b29` | `8bce7df77cad` | `dev-main` / `d6e8792d2bc3` | None |
+| Local directory | Composer package | Distribution repository | `v1.0.0` peeled commit | Annotated tag object | Packagist |
+|---|---|---|---|---|---|
+| `packages/core` | `proit365/multikey-auth-core` | `proit365/multikey-auth-core` | `1229a2138889` | `805d8ca1e6d8` | `v1.0.0` |
+| `packages/server` | `proit365/multikey-auth-server` | `proit365/multikey-auth-server` | `383cd2cf7d27` | `a5077a9c5137` | `v1.0.0` |
+| `packages/client-php` | `proit365/multikey-auth` | `proit365/multikey-auth-php-client` | `4883dc28c28d` | `51bf19cd5fcb` | `v1.0.0` |
+| `packages/laravel-server` | `proit365/laravel-multikey-auth-server` | `proit365/laravel-multikey-auth-server` | `1ed3bf13f757` | `6539d393f561` | `v1.0.0` |
+| `packages/laravel-client` | `proit365/laravel-multikey-auth` | `proit365/laravel-multikey-auth` | `737c71b39c79` | `13277e50fb84` | `v1.0.0` |
+| `packages/cli` | `proit365/multikey-auth-cli` | `proit365/multikey-auth-cli` | `8bce7df77cad` | `ca0cd4050e97` | `v1.0.0` |
 
-Packagist’s repository URL matches the intended distribution repository for each
-package, including the PHP-client distinction. However, each Packagist
-`dev-main` reference currently matches GitHub `main` for five packages. The CLI
-Packagist ref (`d6e8792d2bc3`) is stale versus its distribution `main`
-(`2af738985b29`); the prepared CLI split is `8bce7df77cad`. This indicates an
-update/indexing issue to verify after the approved push. Hook configuration
-cannot be verified publicly and was not changed.
+The Packagist Composer v2 metadata endpoint exposes stable `v1.0.0` for all six
+packages and reports source URLs and references matching the intended
+distribution repositories and split commits. This verifies the PHP-client
+mapping to `proit365/multikey-auth-php-client`.
 
-Packagist's documented manual GitHub hook, if needed, is configured in each
-distribution repository under **Settings → Webhooks → Add webhook**:
+All six releases appeared in Packagist metadata after the GitHub tag pushes,
+and clean Composer installs resolved them. This demonstrates that Packagist
+received the release updates. The private GitHub/Packagist webhook or app
+configuration itself is not publicly inspectable, so its exact mechanism was
+not independently verified. If future tags stop indexing, the documented
+manual hook can be configured in each distribution repository under
+**Settings → Webhooks → Add webhook**:
 
 - Payload URL: `https://packagist.org/api/github?username=<PACKAGIST_USERNAME>`
 - Content type: `application/json`
@@ -85,6 +87,52 @@ distribution repository under **Settings → Webhooks → Add webhook**:
 
 Prefer the Packagist GitHub application/account sync when available. Packagist
 documents this setup at [packagist.org/about#how-to-update-packages](https://packagist.org/about#how-to-update-packages).
+
+## End-user Composer acceptance tests
+
+I ran both normal requirement forms for each package in separate clean
+temporary projects. Each project started with only a name and empty `require`,
+used an isolated Composer home, and had no custom repositories or
+`minimum-stability` setting (Composer's default is `stable`). Tests used
+`--no-interaction --no-progress` only to make the commands non-interactive.
+
+Unversioned commands (each ran in its own clean project):
+
+```sh
+composer require proit365/multikey-auth-core --no-interaction --no-progress
+composer require proit365/multikey-auth-server --no-interaction --no-progress
+composer require proit365/multikey-auth --no-interaction --no-progress
+composer require proit365/laravel-multikey-auth-server --no-interaction --no-progress
+composer require proit365/laravel-multikey-auth --no-interaction --no-progress
+composer require proit365/multikey-auth-cli --no-interaction --no-progress
+```
+
+**Observed:** All six exited 0 and installed `v1.0.0`.
+
+Stable-constraint commands (each ran in its own clean project):
+
+```sh
+composer require 'proit365/multikey-auth-core:^1.0' --no-interaction --no-progress
+composer require 'proit365/multikey-auth-server:^1.0' --no-interaction --no-progress
+composer require 'proit365/multikey-auth:^1.0' --no-interaction --no-progress
+composer require 'proit365/laravel-multikey-auth-server:^1.0' --no-interaction --no-progress
+composer require 'proit365/laravel-multikey-auth:^1.0' --no-interaction --no-progress
+composer require 'proit365/multikey-auth-cli:^1.0' --no-interaction --no-progress
+```
+
+**Observed:** All six exited 0 and installed `v1.0.0`. Internal stable
+dependencies resolved automatically through Packagist. The Laravel Server
+package installed Core and Server without additional require commands.
+
+These were actual Packagist resolution attempts, not local path-repository
+tests. A representative Composer-autoloaded class was confirmed for each
+package after each install form. The exact requested Laravel Server command
+`composer require 'proit365/laravel-multikey-auth-server:^1.0'` was also run in
+a fresh project without additional flags; it installed Laravel Server,
+Server, and Core at `v1.0.0`, and its service provider autoload check passed.
+
+All six unversioned commands and all six `^1.0` commands therefore meet the
+stable Composer acceptance check in this environment.
 
 ## Manifest and dependency audit
 
@@ -146,14 +194,15 @@ matrix.
 
 | Check | Result |
 |---|---|
-| Git status, branch, local tags, and `origin/main` | PASS — clean before audit files; `main`; no local tags; local HEAD equals `origin/main`. |
+| Monorepo HEAD and `origin/main` | PASS — both `ef90f6b681dbcd8ae7316cf5f2c5f767c6f9dc36`; only release report/progress files are modified locally. |
 | `composer validate --strict --no-check-publish` for each of the six package manifests | PASS — all six valid. |
 | `bash -n tools/release/split-packages.sh` | PASS. |
 | `bash tools/release/split-packages.sh --help` | PASS. |
-| GitHub distribution refs and tags | PASS — all six `main` refs found; no tags returned. |
+| GitHub distribution `v1.0.0` tags | PASS — all six annotated tags and peeled commits verified with `git ls-remote --tags`. |
 | GitHub distribution Composer manifests | PASS — intended names, internal requirements, and autoload mappings observed. |
-| Packagist package detail metadata | PASS — all six names registered; only `dev-main` observed; source URLs point to intended repositories. |
-| Clean consumer install from stable Packagist versions | NOT RUN — no stable versions are available; this is reserved for Batch 6 after release approval and indexing. |
+| Packagist Composer v2 metadata | PASS — all six `v1.0.0` versions and expected dependency metadata observed; source refs match split commits. |
+| Packagist update propagation | PASS — each pushed tag appeared in Packagist metadata; underlying webhook/app configuration is not publicly inspectable. |
+| Clean consumer installation with default stability (six unversioned and six `^1.0` requirements) | **PASS** — all 12 installs succeeded at `v1.0.0`; autoload checks passed. |
 
 ### Current continuation checks
 
@@ -166,21 +215,25 @@ matrix.
 | Laravel Server Testbench | **PASS** — 2 tests, 9 assertions |
 | Laravel Client Testbench | **PASS** — 4 tests, 6 assertions |
 | Package LICENSE copies | **PASS** — all six match root MIT license and verified copyright text |
-| Annotated release tag | **PASS** — object and push-to-tag-ref/peeling tested against an isolated local bare repository only |
-| Split publisher preflight | **PASS** — all six splits from clean clone; safe-path/content checks passed |
-| Distribution ancestry | **PASS** — all six remote `main` branches are ancestors of their prepared split commits |
-| Stable Packagist versions and clean `^1.0` consumer installs | **BLOCKED** — no stable tags/versions exist; not claimed |
-| GitHub push, tag, GitHub Release, Packagist configuration changes | **NOT PERFORMED** — requires remaining release gates and explicit authorization |
+| Annotated release tags | **PASS** — six remote tag objects and peeled split commits verified |
+| Split publisher | **PASS** — all six distributions updated/tagged through the existing script; no force-push |
+| Packagist stable metadata | **PASS** — all six v1.0.0 entries, source refs, and internal requirements verified |
+| 12 clean Composer installs and autoload checks | **PASS** — six unversioned and six `^1.0`; all selected versions were `v1.0.0` |
+| Exact Laravel Server command | **PASS** — transitive Server/Core install and provider autoload succeeded |
+| GitHub Releases / webhook settings | **NOT CREATED/CHANGED** — not needed for Composer tags; exact integration settings are not publicly inspectable |
 
 No TLS verification was disabled.
 
-## Remaining work and authorization boundary
+## Completion and remaining release gates
 
-- **Batch 2:** Completed — CLI test extension metadata and annotated release
-  tagging/Windows line-ending safeguards were corrected; previous package
-  content fixes were confirmed.
-- **Batch 3:** Completed — manifests/tests passed and all six distribution
-  split candidates were previewed; no push occurred.
-- **Batches 4–6:** Blocked. Complete the outstanding release checklist before
-  stable tags, obtain explicit owner approval before any push/tag, wait for
-  Packagist indexing, then run all six clean consumer installs.
+- **Batch 2:** Completed — packaging metadata/docs and release tooling fixes.
+- **Batch 3:** Completed — package validation and distribution split previews.
+- **Batch 4:** Completed — six annotated `v1.0.0` tags published in dependency
+  order after the user's explicit approval.
+- **Batch 5:** Completed — all remote tags and Packagist stable metadata
+  verified; Packagist received the tag updates.
+- **Batch 6:** Completed — all 12 clean Composer installs and autoload checks
+  passed, including the exact Laravel Server `^1.0` command.
+
+The broader release checklist items listed above remain outside the scope of
+Composer publication and were not claimed as completed.
