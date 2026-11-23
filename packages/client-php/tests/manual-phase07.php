@@ -75,6 +75,19 @@ foreach ($vector['proof']['key_ids'] as $index => $identifier) {
     ];
 }
 $keyPool = (new ExportLoader())->fromJson(json_encode($manifest, JSON_THROW_ON_ERROR));
+$numericIdentifier = '123456';
+$numericManifest = array_replace($manifest, [
+    'key_count' => 1,
+    'keys' => [[
+        'id' => $numericIdentifier,
+        'secret' => Base64Url::encode(hex2bin($secretParts[0])),
+    ]],
+]);
+$numericKeyPool = (new ExportLoader())->fromJson(json_encode($numericManifest, JSON_THROW_ON_ERROR));
+if ($numericKeyPool->keyCount() !== 1
+    || $numericKeyPool->secretFor($numericIdentifier) !== hex2bin($secretParts[0])) {
+    throw new RuntimeException('Client key pool did not preserve an all-numeric key identifier.');
+}
 
 $challenge = [
     'version' => 1,
@@ -118,6 +131,33 @@ if ($response->statusCode !== 202 || $response->body !== '{"accepted":true}') {
 if ($mock->requests[0]->method !== 'POST'
     || $mock->requests[0]->uri !== 'https://api.example.test/v1/auth/challenges') {
     throw new RuntimeException('Client did not use the configured challenge endpoint.');
+}
+
+$numericIdentifierMock = new Phase07MockTransport(
+    new HttpResponse(
+        200,
+        [],
+        json_encode(array_replace($challenge, [
+            'key_ids' => $numericIdentifier,
+            'key_count' => 1,
+        ]), JSON_THROW_ON_ERROR)
+    ),
+    new HttpResponse(200, [], '{"accepted":true}')
+);
+$numericIdentifierResponse = (new PhpMultiKeyClient(
+    new ClientConfig(
+        'https://api.example.test',
+        $vector['challenge_fixture']['client_id'],
+        1,
+        6,
+        IdentifierGenerator::DEFAULT_ALPHABET
+    ),
+    $numericKeyPool,
+    $numericIdentifierMock
+))->request('GET', '/api/numeric-key');
+if ($numericIdentifierResponse->statusCode !== 200
+    || $numericIdentifierResponse->body !== '{"accepted":true}') {
+    throw new RuntimeException('Client did not complete a request using an all-numeric key identifier.');
 }
 
 $exactBody = "\x00payload\r\n";

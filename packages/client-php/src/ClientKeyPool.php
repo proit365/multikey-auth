@@ -6,13 +6,15 @@ namespace ProIT365\MultiKeyAuth\Client;
 
 final class ClientKeyPool
 {
+    private readonly array $secretsByIdentifier;
+
     public function __construct(
         public readonly string $clientIdentifier,
         public readonly string $poolIdentifier,
         public readonly int $poolVersion,
         public readonly int $identifierLength,
         public readonly string $identifierAlphabet,
-        private readonly array $secretsByIdentifier
+        array $secretsByIdentifier
     ) {
         if ($clientIdentifier === '' || $poolIdentifier === '' || $poolVersion < 1) {
             throw new \InvalidArgumentException('Export client or pool metadata is invalid.');
@@ -27,19 +29,25 @@ final class ClientKeyPool
         if ($secretsByIdentifier === []) {
             throw new \InvalidArgumentException('Export contains no key material.');
         }
+        $normalizedSecretsByIdentifier = [];
         foreach ($secretsByIdentifier as $identifier => $secret) {
-            if (!is_string($identifier)
-                || strlen($identifier) !== $identifierLength
+            if (!is_string($identifier) && !is_int($identifier)) {
+                throw new \InvalidArgumentException('Export key metadata or secret length is invalid.');
+            }
+            $identifier = (string) $identifier;
+            if (strlen($identifier) !== $identifierLength
                 || !is_string($secret)
                 || strlen($secret) !== 32) {
                 throw new \InvalidArgumentException('Export key metadata or secret length is invalid.');
             }
+            $normalizedSecretsByIdentifier['id:' . $identifier] = $secret;
         }
+        $this->secretsByIdentifier = $normalizedSecretsByIdentifier;
     }
 
     public function secretFor(string $identifier): ?string
     {
-        return $this->secretsByIdentifier[$identifier] ?? null;
+        return $this->secretsByIdentifier['id:' . $identifier] ?? null;
     }
 
     public function keyCount(): int
