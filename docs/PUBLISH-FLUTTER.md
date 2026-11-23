@@ -34,11 +34,17 @@ tag can trigger an authorized publish.
 Replace `1.0.1` in the following procedure with the intended independent
 future version. Do not reuse or republish `1.0.0`.
 
-The parent `update.bat` can also perform the Flutter validation and push the
-matching release tag after the normal monorepo and Composer split release
-steps. It asks for separate confirmation before creating or pushing the
-Flutter tag. It never calls `flutter pub publish --force`; publication is
-performed by the GitHub Actions OIDC workflow after the tag is pushed.
+The parent `update.ps1` release driver can also perform the Flutter validation
+and push the matching release tag after the normal monorepo and Composer split
+release steps. `update.bat` remains as a compatibility launcher. PowerShell's
+execution policy must permit the script; the launcher does not change or bypass
+that policy. The driver asks for separate confirmation before creating or
+pushing the Flutter tag. It never calls `flutter pub publish --force`;
+publication is performed by the GitHub Actions OIDC workflow after the tag is
+pushed.
+
+Menu option 3 runs this Flutter release path directly. Option 4 includes Flutter
+in its eight-package individual selector and routes it to the same tag workflow.
 
 ### 1. Update and validate
 

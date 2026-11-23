@@ -55,6 +55,8 @@ boundary.
 
 ## Project
 
+Published package: [proit365_multikey_auth on pub.dev](https://pub.dev/packages/proit365_multikey_auth).
+
 Visit [www.proit365.com](https://www.proit365.com/). The authoritative source,
 protocol specification, and other SDKs are in the
 [ProIT365 MultiKey Auth monorepo](https://github.com/proit365/multikey-auth).

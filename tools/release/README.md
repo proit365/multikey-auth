@@ -33,6 +33,16 @@ The script handles only the six Composer packages. JavaScript remains an npm
 package (`@proit365/multikey-auth`) and Flutter remains a pub.dev package
 (`proit365_multikey_auth`); neither is subtree-published.
 
+Public package listings:
+
+- JavaScript: <https://www.npmjs.com/package/@proit365/multikey-auth>
+- Flutter: <https://pub.dev/packages/proit365_multikey_auth>
+
+The Windows parent `update.ps1` menu's option 4 selects any of the eight
+packages individually. Composer selections push only that package subtree;
+Flutter and JavaScript selections run their own version checks and tag-based
+OIDC publishing workflows.
+
 ## Local development and tests
 
 The six package manifests contain no local `path` repositories. Local internal
