@@ -35,6 +35,13 @@ final class ExportPoolCommand extends Command
         $connection = $database->connection(config('multikey-auth-server.database_connection'));
         $pool = $connection->table('mkap_key_pools')
             ->join('mkap_clients', 'mkap_clients.id', '=', 'mkap_key_pools.client_id')
+            ->select(
+                'mkap_key_pools.id as pool_record_id',
+                'mkap_key_pools.pool_version',
+                'mkap_key_pools.identifier_length',
+                'mkap_key_pools.identifier_alphabet',
+                'mkap_clients.client_identifier'
+            )
             ->where('mkap_key_pools.pool_identifier', $poolId)
             ->orderByDesc('mkap_key_pools.pool_version')
             ->first();
@@ -59,7 +66,7 @@ final class ExportPoolCommand extends Command
         }
 
         $rows = $connection->table('mkap_authentication_keys')
-            ->where('pool_id', $pool->id)
+            ->where('pool_id', $pool->pool_record_id)
             ->where('status', 'active')
             ->orderBy('public_identifier')
             ->get();
@@ -84,7 +91,7 @@ final class ExportPoolCommand extends Command
         }
 
         $exportVersion = (int) $connection->table('mkap_key_exports')
-            ->where('pool_id', $pool->id)
+            ->where('pool_id', $pool->pool_record_id)
             ->max('export_version');
         $exportVersion++;
         $export = new KeyExport(
@@ -156,7 +163,7 @@ final class ExportPoolCommand extends Command
         @chmod($output, 0600);
 
         $connection->table('mkap_key_exports')->insert([
-            'pool_id' => $pool->id,
+            'pool_id' => $pool->pool_record_id,
             'export_version' => $exportVersion,
             'format_version' => 1,
             'key_count' => count($keys),
