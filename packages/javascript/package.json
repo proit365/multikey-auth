@@ -1,6 +1,6 @@
 {
   "name": "@proit365/multikey-auth",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Node.js client SDK for ProIT365 MultiKey Auth (MKAP), creating challenge-response proofs for authenticated API requests.",
   "type": "commonjs",
   "main": "src/index.js",
@@ -22,6 +22,7 @@
     "src/",
     "types/",
     "README.md",
+    "CHANGELOG.md",
     "LICENSE"
   ],
   "keywords": [

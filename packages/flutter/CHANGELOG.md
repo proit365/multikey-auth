@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.3
+
+- Prepare the Flutter SDK patch release.
+
 ## 1.0.1
 
 - Clarify package metadata for registry discovery.
