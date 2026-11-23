@@ -1,3 +1,5 @@
+import { URL } from 'url';
+
 export interface HttpResponse {
   statusCode: number;
   headers: { [name: string]: string | string[] | undefined };
@@ -13,6 +15,10 @@ export interface HttpRequest {
 
 export interface HttpTransport {
   send(request: HttpRequest): Promise<HttpResponse>;
+}
+
+export interface NodeHttpTransportOptions {
+  requireHttps?: boolean;
 }
 
 export interface MkapClientConfig {
@@ -39,6 +45,12 @@ export class MkapClient {
   };
 }
 
+export class NodeHttpTransport implements HttpTransport {
+  constructor(options?: NodeHttpTransportOptions);
+  send(request: HttpRequest): Promise<HttpResponse>;
+}
+
+export function requestUrl(baseUri: string, target: string): URL;
 export interface ExportPool {
   clientId: string;
   poolId: string;
@@ -53,6 +65,9 @@ export function loadExportFile(path: string): ExportPool;
 export function validateExport(manifest: unknown): ExportPool;
 export function encodeBase64Url(buffer: Buffer): string;
 export function decodeBase64Url(value: string, exactLength?: number): Buffer;
+export function uint32(value: number): Buffer;
+export function uint64(value: number): Buffer;
+export function lengthField(value: string | Buffer): Buffer;
 export function hkdfSha256(
   ikm: Buffer,
   salt: Buffer,

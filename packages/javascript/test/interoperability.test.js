@@ -1,6 +1,7 @@
 'use strict';
 
 const assert = require('assert');
+const crypto = require('crypto');
 const fs = require('fs');
 const path = require('path');
 const {
@@ -10,11 +11,21 @@ const {
   proofMessage,
   hmacSha256,
   decodeBase64Url,
-  encodeBase64Url
+  encodeBase64Url,
+  requestUrl
 } = require('../src');
 
 const vectorPath = path.resolve(__dirname, '../../../specification/test-vectors-v1.json');
 const vector = JSON.parse(fs.readFileSync(vectorPath, 'utf8'));
+
+assert.throws(
+  () => requestUrl('https://api.example.test', '//attacker.example/path'),
+  /must remain on the base origin/
+);
+assert.throws(
+  () => requestUrl('https://api.example.test', '/api/../admin'),
+  /not canonical for the transport/
+);
 
 const ikm = Buffer.from(vector.hkdf.ikm_hex, 'hex');
 const salt = Buffer.from(vector.hkdf.salt_hex, 'hex');
@@ -128,7 +139,80 @@ client.request(
   assert.strictEqual(requests[1].body.length, 0);
   assert.strictEqual(requests[1].headers['X-MKAP-Request'], vector.challenge_fixture.request_id_base64url);
   assert.strictEqual(requests[1].headers['X-MKAP-Proof'], vector.proof.hmac_base64url);
-  console.log('Phase 10 JavaScript interoperability tests passed.');
+
+  const originalBody = Buffer.from('{"status":"pending"}');
+  const callerBody = Buffer.from(originalBody);
+  const mutationRequests = [];
+  const mutationTransport = {
+    async send(request) {
+      mutationRequests.push(request);
+      if (mutationRequests.length === 1) {
+        const challengeRequest = JSON.parse(request.body.toString('utf8'));
+        const expectedHash = crypto.createHash('sha256').update(originalBody).digest();
+        assert.strictEqual(challengeRequest.body_sha256, encodeBase64Url(expectedHash));
+        callerBody.fill(0);
+        return {
+          statusCode: 200,
+          headers: {},
+          body: Buffer.from(JSON.stringify({
+            version: 1,
+            request_id: vector.challenge_fixture.request_id_base64url,
+            nonce: vector.challenge_fixture.nonce_base64url,
+            key_ids: vector.challenge_fixture.key_ids,
+            key_count: vector.challenge_fixture.key_count,
+            id_length: vector.challenge_fixture.id_length,
+            expires_in: 30,
+            expires_at: vector.proof.expires_at
+          }))
+        };
+      }
+      return {
+        statusCode: 202,
+        headers: {},
+        body: Buffer.alloc(0)
+      };
+    }
+  };
+  const mutationClient = new MkapClient({
+    baseUri: 'https://api.example.test',
+    clientId: 'CLIENT_001',
+    poolVersion: 1,
+    identifierLength: 6,
+    identifierAlphabet: 'abcdefghijklmnopqrstuvwxyz0123456789',
+    exportJson: JSON.stringify(manifest),
+    requireHttps: true
+  }, mutationTransport);
+
+  let invalidTargetTransportCalled = false;
+  const invalidTargetClient = new MkapClient({
+    baseUri: 'https://api.example.test',
+    clientId: 'CLIENT_001',
+    poolVersion: 1,
+    identifierLength: 6,
+    identifierAlphabet: 'abcdefghijklmnopqrstuvwxyz0123456789',
+    exportJson: JSON.stringify(manifest),
+    requireHttps: true
+  }, {
+    async send() {
+      invalidTargetTransportCalled = true;
+      throw new Error('Transport must not be called for an invalid target');
+    }
+  });
+
+  return assert.rejects(
+    invalidTargetClient.request('GET', '//attacker.example/path'),
+    /must remain on the base origin/
+  ).then(() => {
+    assert.strictEqual(invalidTargetTransportCalled, false);
+    return mutationClient.request(
+      vector.proof.http_method,
+      vector.proof.request_target,
+      callerBody
+    );
+  }).then(() => {
+    assert.deepStrictEqual(mutationRequests[1].body, originalBody);
+    console.log('JavaScript interoperability tests passed.');
+  });
 }).catch((error) => {
   console.error(error && error.stack ? error.stack : error);
   process.exitCode = 1;

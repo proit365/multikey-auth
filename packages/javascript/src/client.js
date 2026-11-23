@@ -99,12 +99,13 @@ class MkapClient {
     validateMethod(method);
     validateTarget(target);
     const bodyBuffer = Buffer.isBuffer(body)
-      ? body
+      ? Buffer.from(body)
       : Buffer.from(body || '', 'utf8');
     if (bodyBuffer.length > 16777216) {
       throw new Error('Request body is too large');
     }
     const bodyHash = crypto.createHash('sha256').update(bodyBuffer).digest();
+    const apiUrl = requestUrl(this.config.baseUri, target);
 
     const challengeRequest = {
       version: 1,
@@ -168,7 +169,6 @@ class MkapClient {
       challenge.keyIds
     );
     const proof = hmacSha256(proofKey, message);
-    const apiUrl = requestUrl(this.config.baseUri, target);
 
     return this.transport.send({
       method,

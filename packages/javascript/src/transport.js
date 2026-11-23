@@ -8,9 +8,19 @@ function requestUrl(baseUri, target) {
   if (typeof baseUri !== 'string' || typeof target !== 'string') {
     throw new TypeError('Base URI and target must be strings');
   }
-  const url = new URL(target, baseUri);
+  const baseUrl = new URL(baseUri);
+  const url = new URL(target, baseUrl);
   if (!/^https?:$/.test(url.protocol)) {
     throw new Error('Unsupported transport protocol');
+  }
+  if (url.origin !== baseUrl.origin) {
+    throw new Error('Request target must remain on the base origin');
+  }
+  if (url.username || url.password || baseUrl.username || baseUrl.password) {
+    throw new Error('Transport URLs must not contain credentials');
+  }
+  if (url.pathname + url.search !== target) {
+    throw new Error('Request target is not canonical for the transport');
   }
   return url;
 }
