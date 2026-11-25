@@ -172,20 +172,21 @@ The core protocol is intended to remain independent of Laravel and other applica
 
 ## Supported Platforms
 
-Package identities (publishing pending):
+Live package repositories:
 
 | Platform | Package |
 |---|---|
-| PHP Core | `proit365/multikey-auth-core` |
-| PHP Server | `proit365/multikey-auth-server` |
-| PHP Client | `proit365/multikey-auth` |
-| Laravel Server | `proit365/laravel-multikey-auth-server` |
-| Laravel Client | `proit365/laravel-multikey-auth` |
-| JavaScript / Node.js | `@proit365/multikey-auth` |
-| Flutter / Dart | `proit365_multikey_auth` |
-| Command Line | `proit365/multikey-auth-cli` |
+| PHP Core | [`proit365/multikey-auth-core`](https://packagist.org/packages/proit365/multikey-auth-core) |
+| PHP Server | [`proit365/multikey-auth-server`](https://packagist.org/packages/proit365/multikey-auth-server) |
+| PHP Client | [`proit365/multikey-auth`](https://packagist.org/packages/proit365/multikey-auth) |
+| Laravel Server | [`proit365/laravel-multikey-auth-server`](https://packagist.org/packages/proit365/laravel-multikey-auth-server) |
+| Laravel Client | [`proit365/laravel-multikey-auth`](https://packagist.org/packages/proit365/laravel-multikey-auth) |
+| JavaScript / Node.js | [`@proit365/multikey-auth`](https://www.npmjs.com/package/@proit365/multikey-auth) |
+| Flutter / Dart | [`proit365_multikey_auth`](https://pub.dev/packages/proit365_multikey_auth) |
+| Command Line | [`proit365/multikey-auth-cli`](https://packagist.org/packages/proit365/multikey-auth-cli) |
 
-Package publication and registry availability are pending.
+These packages are published in their linked registries. See each package's
+registry page for the current release and package-specific installation details.
 
 ### Browser security
 
@@ -322,7 +323,8 @@ Exact supported versions will be documented as implementations are released.
 
 ## Installation
 
-Installation instructions will be published when the corresponding packages are implemented and released.
+For installation instructions, requirements, and current releases, use the
+registry link for your platform in [Supported Platforms](#supported-platforms).
 
 To obtain the source code:
 
@@ -365,13 +367,13 @@ MultiKey Auth is being developed incrementally.
 |---|---|
 | Architecture | Under development |
 | Protocol specification | Under development |
-| Cryptographic implementation | Not yet released |
-| Key pool management | Not yet released |
-| PHP SDK | Not yet released |
-| Laravel integration | Not yet released |
-| JavaScript SDK | Not yet released |
-| Flutter SDK | Not yet released |
-| CLI tools | Not yet released |
+| Cryptographic implementation | Published in packages; under development |
+| Key pool management | Published in packages; under development |
+| PHP SDK | Published packages; under development |
+| Laravel integration | Published packages; under development |
+| JavaScript SDK | Published package; under development |
+| Flutter SDK | Published package; under development |
+| CLI tools | Published package; under development |
 | Working examples | Not yet released |
 | Automated integration tests | Not yet released |
 | Independent security review | Pending |
