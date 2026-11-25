@@ -71,6 +71,10 @@ The published v1.0.2 client completed a live challenge-response request against
 the Laravel test server and received HTTP 200. This loopback integration test
 does not validate a production HTTPS deployment.
 
+## Development and production readiness
+
+> **Development status:** MKAP v1 remains under development and is not recommended for production use. Publication on Packagist and a successful loopback challenge-response test do not establish production readiness; that test does not validate a production HTTPS deployment. Client exports contain impersonation-capable secret material and must be protected accordingly. Cross-platform live interoperability and independent security review remain incomplete. Use this package for development, testing, and evaluation until the project’s production-readiness requirements are completed.
+
 ## Source and support
 
 Project website: [https://www.proit365.com](https://www.proit365.com).
