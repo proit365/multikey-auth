@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Challenge issuance and request-proof verification.">
+  <title>Framework-independent Server Guide | ProIT365 MultiKey Auth</title>
+  <style>
+:root { color-scheme: light; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; color: #1f2937; background: #f5f7fb; }
+* { box-sizing: border-box; }
+body { margin: 0; line-height: 1.65; }
+header, main, footer { width: min(100% - 2rem, 76rem); margin-inline: auto; }
+header { padding: 1.25rem 0; border-bottom: 1px solid #d8dee9; color: #334155; }
+header p { margin: 0; font-weight: 650; }
+header nav { margin-top: .35rem; font-size: .9rem; }
+main { margin-block: 2rem; }
+article { background: white; border: 1px solid #e1e7ef; border-radius: .65rem; padding: clamp(1.25rem, 4vw, 3rem); box-shadow: 0 2px 10px #0f172a0b; overflow-wrap: anywhere; }
+h1, h2, h3, h4 { line-height: 1.25; color: #111827; }
+h1 { margin-top: 0; font-size: clamp(1.8rem, 4vw, 2.4rem); }
+h2 { margin-top: 2.2rem; padding-bottom: .35rem; border-bottom: 1px solid #e5e7eb; }
+a { color: #0759a5; }
+code, pre { font-family: ui-monospace, SFMono-Regular, Consolas, monospace; }
+:not(pre) > code { background: #eef2f7; border-radius: .25rem; padding: .12em .3em; font-size: .92em; }
+pre { overflow-x: auto; padding: 1rem; border-radius: .45rem; background: #111827; color: #f8fafc; line-height: 1.5; }
+pre code { color: inherit; background: transparent; padding: 0; }
+table { display: block; overflow-x: auto; border-collapse: collapse; width: 100%; }
+th, td { border: 1px solid #d8dee9; padding: .55rem .7rem; text-align: left; vertical-align: top; }
+th { background: #f1f5f9; }
+blockquote { margin-inline: 0; padding: .3rem 1rem; border-left: .25rem solid #94a3b8; color: #475569; }
+li + li { margin-top: .25rem; }
+footer { padding: 0 0 2rem; color: #64748b; font-size: .9rem; }
+@media (max-width: 40rem) { header, main, footer { width: min(100% - 1rem, 76rem); } article { padding: 1rem; } }
+</style>
+</head>
+<body>
+  <header>
+    <p>ProIT365 MultiKey Auth</p>
+    <nav><a href="guide.md">View Markdown source</a></nav>
+  </header>
+  <main><article class="markdown-body">
+<h1 id="framework-independent-server-guide">Framework-independent Server Guide</h1>
+<p><code>proit365/multikey-auth-server</code> implements MKAP v1 challenge issuance and
+request-proof verification. It supplies interfaces and PDO/in-memory adapters,
+but no HTTP router, middleware, or web-server configuration. Laravel
+applications can use the
+<a href="https://github.com/proit365/laravel-multikey-auth-server">Laravel server package</a>.</p>
+<h2 id="requirements-and-installation">Requirements and installation</h2>
+<ul>
+<li>PHP <code>^8.2</code></li>
+<li><code>proit365/multikey-auth-core:^1.0</code></li>
+<li><code>ext-pdo</code> when using <code>PdoChallengeRepository</code></li>
+<li>An installed PDO driver matching the selected database</li>
+</ul>
+<pre><code class="language-shell">composer require proit365/multikey-auth-server:^1.0
+</code></pre>
+<p>The package's server classes use the <code>ProIT365\MultiKeyAuth\Core\Server\</code>
+namespace.</p>
+<h2 id="request-lifecycle">Request lifecycle</h2>
+<p>The server has two operations:</p>
+<ol>
+<li>Issue a short-lived challenge bound to a client's method, request target,
+   and body hash.</li>
+<li>Verify a proof for that challenge, then consume the challenge once.</li>
+</ol>
+<p>The HTTP adapter is responsible for preserving the exact request method,
+origin-form request target (including its query string), and raw body bytes
+between challenge creation and authentication.</p>
+<h3 id="challenge-request">Challenge request</h3>
+<p>Create a <code>ChallengeRequest</code> with protocol version <code>1</code>, the public client
+identifier, uppercase HTTP method, request target, and the raw 32-byte
+SHA-256 digest of the eventual request body.</p>
+<p>The corresponding HTTP JSON representation is:</p>
+<pre><code class="language-json">{
+  &quot;version&quot;: 1,
+  &quot;client_id&quot;: &quot;CLIENT_001&quot;,
+  &quot;method&quot;: &quot;POST&quot;,
+  &quot;target&quot;: &quot;/api/orders?draft=1&quot;,
+  &quot;body_sha256&quot;: &quot;BASE64URL_OF_32_BYTE_SHA256&quot;
+}
+</code></pre>
+<p>The wire <code>body_sha256</code> value is unpadded base64url. Decode it before creating
+the core <code>ChallengeRequest</code>.</p>
+<p><code>ChallengeIssuer::issue()</code> rate-limits the client, finds its active pool,
+selects the configured number of active key identifiers, creates a random
+16-byte request identifier and 32-byte nonce, stores the challenge, and
+returns a <code>ChallengeResponse</code>. Challenge lifetime defaults to 30 seconds and
+must be between 1 and 3,600 seconds.</p>
+<p>The response fields are:</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>version</code></td>
+<td>Protocol version (<code>1</code>)</td>
+</tr>
+<tr>
+<td><code>request_id</code></td>
+<td>16-byte request identifier, unpadded base64url</td>
+</tr>
+<tr>
+<td><code>nonce</code></td>
+<td>32-byte nonce, unpadded base64url</td>
+</tr>
+<tr>
+<td><code>key_ids</code></td>
+<td>Selected fixed-width identifiers concatenated in selection order</td>
+</tr>
+<tr>
+<td><code>key_count</code></td>
+<td>Number of selected identifiers</td>
+</tr>
+<tr>
+<td><code>id_length</code></td>
+<td>Identifier width needed to split <code>key_ids</code></td>
+</tr>
+<tr>
+<td><code>expires_in</code></td>
+<td>Challenge lifetime in seconds</td>
+</tr>
+<tr>
+<td><code>expires_at</code></td>
+<td>Absolute server-issued Unix timestamp</td>
+</tr>
+</tbody>
+</table>
+<p>Clients must use the server-provided <code>expires_at</code> and key order when building
+the proof.</p>
+<h3 id="authentication-request">Authentication request</h3>
+<p>After decoding the request identifier and proof from base64url, construct an
+<code>AuthenticatedRequest</code> with the client identifier, binary request identifier,
+binary 32-byte proof, uppercase method, exact target, raw request body, and
+protocol version <code>1</code>.</p>
+<p><code>AuthenticationVerifier::verify()</code> checks challenge state and expiry, body
+size, client/request binding, selected active keys, and the HMAC proof. It
+consumes the challenge only after successful verification. An adapter must
+call it before authorizing the protected operation.</p>
+<p>The Laravel adapter uses these headers:</p>
+<pre><code class="language-text">X-MKAP-Version: 1
+X-MKAP-Client: CLIENT_001
+X-MKAP-Request: &lt;base64url request_id&gt;
+X-MKAP-Proof: &lt;base64url 32-byte proof&gt;
+</code></pre>
+<h2 id="composition-interfaces">Composition interfaces</h2>
+<p><code>ChallengeIssuer</code> and <code>AuthenticationVerifier</code> are composed from:</p>
+<table>
+<thead>
+<tr>
+<th>Interface or service</th>
+<th>Responsibility</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ClientPoolProviderInterface</code></td>
+<td>Resolve the client's single active pool</td>
+</tr>
+<tr>
+<td><code>KeyRepositoryInterface</code></td>
+<td>Fetch active key records and identifiers</td>
+</tr>
+<tr>
+<td><code>ChallengeRepositoryInterface</code></td>
+<td>Store, retrieve, and atomically consume challenges</td>
+</tr>
+<tr>
+<td><code>RateLimiterInterface</code></td>
+<td>Limit challenge and authentication operations</td>
+</tr>
+<tr>
+<td><code>MasterKeyProviderInterface</code></td>
+<td>Supply a versioned master key for a pool</td>
+</tr>
+<tr>
+<td><code>ClockInterface</code></td>
+<td>Provide server time</td>
+</tr>
+<tr>
+<td>Core crypto services</td>
+<td>Hash bodies, encode messages, derive keys, and verify HMAC</td>
+</tr>
+</tbody>
+</table>
+<p>The provided <code>PdoChallengeRepository</code> persists challenges and uses a conditional
+update for consumption. It requires the MKAP challenge tables; use the
+<a href="https://github.com/proit365/multikey-auth/tree/main/database/mysql">MySQL</a>
+or <a href="https://github.com/proit365/multikey-auth/tree/main/database/sqlite">SQLite</a>
+schema from the monorepo. A database-backed <code>KeyRepositoryInterface</code> is
+provided by Core.</p>
+<p><code>InMemoryChallengeRepository</code>, <code>InMemoryClientPoolProvider</code>, and
+<code>FixedWindowRateLimiter</code> are useful for tests and single-process development.
+The fixed-window limiter keeps state in process memory and must not be used as
+a shared production limiter. Production integrations need a shared,
+appropriately atomic rate limiter and must validate concurrency behavior with
+their actual database and cache deployment.</p>
+<h2 id="validation-and-error-mapping">Validation and error mapping</h2>
+<p>The core exposes typed exceptions so adapters can map failures consistently.
+The Laravel adapter maps them as follows:</p>
+<table>
+<thead>
+<tr>
+<th>Failure</th>
+<th style="text-align: right;">HTTP status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Invalid request metadata</td>
+<td style="text-align: right;">400</td>
+</tr>
+<tr>
+<td>Unknown client</td>
+<td style="text-align: right;">403</td>
+</tr>
+<tr>
+<td>Failed or expired proof</td>
+<td style="text-align: right;">401</td>
+</tr>
+<tr>
+<td>Unknown challenge</td>
+<td style="text-align: right;">404</td>
+</tr>
+<tr>
+<td>Replay or already-consumed challenge</td>
+<td style="text-align: right;">409</td>
+</tr>
+<tr>
+<td>Oversized request body</td>
+<td style="text-align: right;">413</td>
+</tr>
+<tr>
+<td>Rate limit exceeded</td>
+<td style="text-align: right;">429</td>
+</tr>
+<tr>
+<td>Unexpected internal failure</td>
+<td style="text-align: right;">500</td>
+</tr>
+</tbody>
+</table>
+<p>Do not reveal secret material, expected proofs, or unnecessary internal
+database details in client-facing errors.</p>
+<h2 id="limits-and-production-responsibilities">Limits and production responsibilities</h2>
+<p><code>AuthenticationVerifier</code> defaults to a maximum authenticated body of 1 MiB.
+The HTTP integration must impose its own request-size limits before reading
+large bodies. The adapter must also configure an appropriate challenge-body
+limit and challenge lifetime.</p>
+<p>The core does not configure HTTPS, reverse proxies, shared caches, persistent
+database schemas, master-key management, or operational monitoring. These are
+deployment responsibilities. See the
+<a href="https://github.com/proit365/multikey-auth/blob/main/specification/mkap-v1.md">protocol specification</a>
+and <a href="https://github.com/proit365/multikey-auth/blob/main/docs/security.md">security guide</a>.</p>
+<h2 id="testing">Testing</h2>
+<p>The standalone Server package does not currently declare a <code>composer test</code>
+script or ship a package-local test suite. Use the monorepo's interoperability
+and database test suites for cross-package verification. Passing tests do not
+establish production readiness or multi-worker replay protection.</p>
+  </article></main>
+  <footer><p>HTML guide generated from <a href="guide.md">guide.md</a>. See the <a href="https://github.com/proit365/multikey-auth/tree/main/docs">project documentation</a> for protocol-wide guidance.</p></footer>
+</body>
+</html>
