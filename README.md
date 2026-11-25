@@ -12,7 +12,7 @@ used by the MKAP v1 client and server packages.
 
 ## Installation
 
-After the package is available from Packagist:
+Install [`proit365/multikey-auth-core` from Packagist](https://packagist.org/packages/proit365/multikey-auth-core):
 
 ```shell
 composer require proit365/multikey-auth-core:^1.0
