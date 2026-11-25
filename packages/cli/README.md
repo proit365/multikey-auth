@@ -6,7 +6,7 @@ The framework-independent CLI wraps the core and server packages. It uses
 
 ## Installation
 
-After the package and its dependencies are available from Packagist:
+Install [`proit365/multikey-auth-cli` from Packagist](https://packagist.org/packages/proit365/multikey-auth-cli). Its dependencies are also available on Packagist:
 
 ```shell
 composer require proit365/multikey-auth-cli:^1.0

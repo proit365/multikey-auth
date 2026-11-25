@@ -6,7 +6,7 @@ internally, and returns the target API's normal HTTP response.
 
 ## Installation
 
-After the package and its Core dependency are available from Packagist:
+Install [`proit365/multikey-auth` from Packagist](https://packagist.org/packages/proit365/multikey-auth). Its Core dependency is also available on Packagist:
 
 ```shell
 composer require proit365/multikey-auth:^1.0

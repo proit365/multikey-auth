@@ -11,6 +11,8 @@ modules only and has no runtime dependencies.
 - A server-side Node.js environment. This package is not browser-compatible.
 - A client export generated for the corresponding MKAP client and pool.
 
+Published package: [`@proit365/multikey-auth` on npm](https://www.npmjs.com/package/@proit365/multikey-auth).
+
 ```sh
 npm install @proit365/multikey-auth
 ```
@@ -125,8 +127,6 @@ or a plaintext key export into browser JavaScript. Browser use requires a
 separate backend-for-frontend or device-bound credential design.
 
 ## Project
-
-Published package: [@proit365/multikey-auth on npm](https://www.npmjs.com/package/@proit365/multikey-auth).
 
 Visit [www.proit365.com](https://www.proit365.com/). The authoritative source,
 protocol specification, and other SDKs are in the

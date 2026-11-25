@@ -6,7 +6,7 @@ the client through dependency injection or the `MKAP` facade.
 
 ## Installation
 
-After the package and its PHP client dependency are available from Packagist:
+Install [`proit365/laravel-multikey-auth` from Packagist](https://packagist.org/packages/proit365/laravel-multikey-auth). Its PHP client dependency is also available on Packagist:
 
 ```shell
 composer require proit365/laravel-multikey-auth:^1.0

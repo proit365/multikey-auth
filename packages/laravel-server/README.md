@@ -6,8 +6,8 @@ is not supported by this package version.
 
 ## Installation
 
-Install the package in a Laravel 12 application after it and its dependencies
-are available from Packagist:
+Install [`proit365/laravel-multikey-auth-server` from Packagist](https://packagist.org/packages/proit365/laravel-multikey-auth-server)
+in a Laravel 12 application:
 
 ```shell
 composer require proit365/laravel-multikey-auth-server:^1.0

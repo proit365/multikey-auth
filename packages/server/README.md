@@ -7,7 +7,7 @@ framework adapters.
 
 ## Installation
 
-After the package and its Core dependency are available from Packagist:
+Install [`proit365/multikey-auth-server` from Packagist](https://packagist.org/packages/proit365/multikey-auth-server). Its Core dependency is also available on Packagist:
 
 ```shell
 composer require proit365/multikey-auth-server:^1.0
