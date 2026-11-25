@@ -4,7 +4,8 @@
 used by the MKAP v1 client and server packages.
 
 For installation, API, key-management, storage, and export details, see the
-[complete Core package guide](docs/guide.md).
+[Core package guide in Markdown](docs/guide.md) or
+[HTML](docs/guide.html).
 
 ## Requirements
 
