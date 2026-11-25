@@ -5,6 +5,10 @@ one-time challenge consumption, client/pool and repository interfaces, and
 rate-limiter boundaries. Framework routing and middleware belong in the
 framework adapters.
 
+For the challenge lifecycle, composition interfaces, storage requirements, and
+error handling, see the
+[complete Server package guide](docs/guide.md).
+
 ## Installation
 
 Install [`proit365/multikey-auth-server` from Packagist](https://packagist.org/packages/proit365/multikey-auth-server). Its Core dependency is also available on Packagist:
