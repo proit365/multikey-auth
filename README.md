@@ -52,6 +52,8 @@ composer test
 
 The CLI test uses an in-memory SQLite database and the package's schema
 fixture.
+The published v1.0.1 CLI smoke test passed. This does not certify production
+export handling or deployment readiness.
 
 ## Source and support
 
