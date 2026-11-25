@@ -3,6 +3,9 @@
 `proit365/multikey-auth-core` provides the framework-independent primitives
 used by the MKAP v1 client and server packages.
 
+For installation, API, key-management, storage, and export details, see the
+[complete Core package guide](docs/guide.md).
+
 ## Requirements
 
 - PHP `^8.2`
