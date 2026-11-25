@@ -1,11 +1,10 @@
 # Known Limitations
 
 - MKAP has not received an independent security review.
-- PHPUnit and Laravel/Testbench dependencies remain blocked by environment TLS
-  certificate verification.
-- Live MySQL, mysqli, PDO/MySQL challenge, Laravel HTTP, and distributed
-  concurrent challenge-consumption tests were not executed.
-- JavaScript and Flutter live HTTP authentication against PHP is pending.
+- Source-package Laravel Testbench feature suites were not run; these are
+  separate from the live application checks in the framework test workspace.
+- Live MySQL, mysqli, PDO/MySQL challenge, and distributed concurrent
+  challenge-consumption tests were not executed.
 - Protected exports cannot be opened by the PHP, JavaScript, or Flutter loaders,
   so protected export creation is disabled.
 - The fixed-window limiter is process-local and not suitable for

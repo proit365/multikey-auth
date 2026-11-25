@@ -2,8 +2,13 @@
 
 ## Status
 
-Initial development verification only. This report does not claim production
-readiness or independent security review.
+Development verification only. This report does not claim production readiness
+or independent security review.
+
+Composer diagnostics on 2026-11-25 confirmed HTTPS connectivity to Packagist
+and GitHub. Live-package tests were run for the PHP, JavaScript, and Dart
+clients against the Laravel server; each client verifies HTTP 200 from the
+protected endpoint.
 
 ## Passing local checks
 
@@ -18,20 +23,27 @@ readiness or independent security review.
 - PHP syntax checks across implemented PHP source
 - Composer manifest validation
 - Phase 13 consolidated smoke suite
-- Phase 15 website/SEO factuality validation
 
-## Blocked or unexecuted checks
+## Passing live package checks
 
-- PHPUnit suite due to Avast/TLS certificate interception
+- Published PHP Core, Server, CLI, and PHP Client package smoke/communication
+  tests in `test-with-frameworks`
+- Published JavaScript and Dart clients completed challenge-response requests
+  against the Laravel test server and received HTTP 200
+- Laravel application integration tests using the published server package
+
+## Remaining unverified checks and known failures
+
 - Live MySQL and mysqli integration due unavailable credentials
-- Laravel 12/Testbench live integration due dependency TLS failure
-- Live PHP-JavaScript HTTP authentication
-- Live PHP-Flutter HTTP authentication
+- PDO/MySQL challenge repository integration
 - Distributed concurrent challenge replay testing
+- Source-package Laravel Testbench feature suites
 - Independent security review
-- Package registry availability and clean publication/install testing
+- Clean consumer installation from each package registry
 - Protected-export interoperability
 - Hardware-backed mobile secure storage
+- Phase 15 website/SEO validator (failed in the repository audit because its
+  expected website files are outside this repository)
 
 ## Recorded benchmark
 

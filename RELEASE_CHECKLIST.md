@@ -2,9 +2,10 @@
 
 ## Required before any release
 
-- [ ] Resolve the existing PHPUnit/TLS dependency installation blocker.
-- [ ] Run live MySQL, mysqli, PDO/SQLite, Laravel, JavaScript HTTP, and
-  Flutter HTTP integration suites.
+- [x] Run live PHP, JavaScript, and Flutter challenge-response tests against
+  the Laravel server; verify the protected endpoint returns HTTP 200.
+- [ ] Run source-package Laravel Testbench feature suites.
+- [ ] Run live MySQL, mysqli, and PDO/MySQL integration suites.
 - [ ] Run concurrent challenge-consumption testing.
 - [ ] Obtain an independent security review.
 - [ ] Resolve protected-export interoperability across all clients.
