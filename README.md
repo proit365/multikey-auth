@@ -32,6 +32,13 @@ Server key selection uses secure random ranks and indexed database lookups; it
 does not load the complete key pool into application memory per challenge.
 Master encryption keys must be provided through an external secret store.
 
+## Validation status
+
+The published v1.0.1 server smoke test passed. The PDO challenge repository
+also passed MySQL 8.0.46 persistence, lookup, one-time consumption, and expiry
+checks. These were not multi-worker tests; shared rate limiting and concurrent
+replay behavior remain unverified.
+
 ## Source and support
 
 Project website: [https://www.proit365.com](https://www.proit365.com).
