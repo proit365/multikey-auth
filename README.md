@@ -43,6 +43,10 @@ also passed MySQL 8.0.46 persistence, lookup, one-time consumption, and expiry
 checks. These were not multi-worker tests; shared rate limiting and concurrent
 replay behavior remain unverified.
 
+## Development and production readiness
+
+> **Development status:** MKAP v1 remains under development and is not recommended for production use. Publication on Packagist and passing package/MySQL checks do not constitute production certification. The fixed-window in-memory limiter is for tests or single-process development; production requires a shared atomic limiter. Multi-worker replay behavior, shared-service deployment validation, and independent security review remain incomplete. Use this package for development, testing, and evaluation until these gaps are resolved and the protocol has received an independent security review.
+
 ## Source and support
 
 Project website: [https://www.proit365.com](https://www.proit365.com).
