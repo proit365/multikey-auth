@@ -72,10 +72,6 @@ The published v1.0.1 PHPUnit suite passed with 9 tests and 20 assertions.
 MySQL 8.0.46 repository checks also passed for both PDO and mysqli adapters.
 These results are development verification, not production certification.
 
-## Development and production readiness
-
-> **Development status:** The Core package contains cryptographic and key-management primitives, not a complete authenticated API deployment. MKAP v1 remains under development and is not recommended for production use. Publication on Packagist and passing package tests do not constitute a security audit or production certification. The protocol has not received an independent security review; cross-platform live interoperability and deployment validation remain incomplete. Use this package for development, testing, and evaluation until the project’s production-readiness requirements are completed.
-
 ## Source and support
 
 Project website: [https://www.proit365.com](https://www.proit365.com).
