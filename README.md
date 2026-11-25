@@ -4,6 +4,10 @@
 server. It validates client exports, obtains a challenge, derives the proof
 internally, and returns the target API's normal HTTP response.
 
+For transport requirements, configuration, request behavior, and security
+details, see the
+[complete PHP Client SDK guide](docs/guide.md).
+
 ## Installation
 
 Install [`proit365/multikey-auth` from Packagist](https://packagist.org/packages/proit365/multikey-auth). Its Core dependency is also available on Packagist:
