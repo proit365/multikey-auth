@@ -8,7 +8,7 @@
   "support": {
     "issues": "https://github.com/proit365/multikey-auth/issues",
     "source": "https://github.com/proit365/multikey-auth/tree/main/packages/cli",
-    "docs": "https://github.com/proit365/multikey-auth/tree/main/packages/cli"
+    "docs": "https://github.com/proit365/multikey-auth-cli/blob/main/docs/guide.md"
   },
   "bin": [
     "bin/mkap"

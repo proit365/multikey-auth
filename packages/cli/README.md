@@ -4,6 +4,10 @@ The framework-independent CLI wraps the core and server packages. It uses
 `MKAP_CLI_DSN`, `MKAP_CLI_DB_USERNAME`, `MKAP_CLI_DB_PASSWORD`, and
 `MKAP_CLI_AUDIT_LOG`.
 
+For database setup, command reference, master-key input, and safety behavior,
+see the
+[complete Administrative CLI guide](docs/guide.md).
+
 ## Installation
 
 Install [`proit365/multikey-auth-cli` from Packagist](https://packagist.org/packages/proit365/multikey-auth-cli). Its dependencies are also available on Packagist:

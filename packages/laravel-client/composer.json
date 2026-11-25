@@ -8,7 +8,7 @@
   "support": {
     "issues": "https://github.com/proit365/multikey-auth/issues",
     "source": "https://github.com/proit365/multikey-auth/tree/main/packages/laravel-client",
-    "docs": "https://github.com/proit365/multikey-auth/tree/main/packages/laravel-client"
+    "docs": "https://github.com/proit365/laravel-multikey-auth/blob/main/docs/guide.md"
   },
   "require": {
     "php": "^8.2",

@@ -4,6 +4,10 @@
 12. It requires PHP `^8.2` and Laravel 12, publishes configuration, and exposes
 the client through dependency injection or the `MKAP` facade.
 
+For configuration, facade and dependency-injection usage, request behavior,
+and security details, see the
+[complete Laravel Client guide](docs/guide.md).
+
 ## Installation
 
 Install [`proit365/laravel-multikey-auth` from Packagist](https://packagist.org/packages/proit365/laravel-multikey-auth). Its PHP client dependency is also available on Packagist:

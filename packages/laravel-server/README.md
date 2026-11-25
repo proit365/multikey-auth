@@ -4,6 +4,10 @@
 MKAP server with Laravel 12. It requires PHP `^8.2` and Laravel 12; Laravel 13
 is not supported by this package version.
 
+For database setup, route configuration, middleware, Artisan commands, and
+deployment guidance, see the
+[complete Laravel Server guide](docs/guide.md).
+
 ## Installation
 
 Install [`proit365/laravel-multikey-auth-server` from Packagist](https://packagist.org/packages/proit365/laravel-multikey-auth-server)
