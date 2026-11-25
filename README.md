@@ -64,6 +64,9 @@ composer test
 
 The package test suite includes protocol known-answer vectors. The monorepo's
 cross-package checks are run separately with `php tests/phase13-smoke.php`.
+The published v1.0.1 PHPUnit suite passed with 9 tests and 20 assertions.
+MySQL 8.0.46 repository checks also passed for both PDO and mysqli adapters.
+These results are development verification, not production certification.
 
 ## Source and support
 
