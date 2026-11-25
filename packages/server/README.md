@@ -7,7 +7,7 @@ framework adapters.
 
 For the challenge lifecycle, composition interfaces, storage requirements, and
 error handling, see the
-[complete Server package guide](docs/guide.md).
+[Server package guide in Markdown](docs/guide.md) or [HTML](docs/guide.html).
 
 ## Installation
 

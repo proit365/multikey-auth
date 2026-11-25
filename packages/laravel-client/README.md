@@ -6,7 +6,7 @@ the client through dependency injection or the `MKAP` facade.
 
 For configuration, facade and dependency-injection usage, request behavior,
 and security details, see the
-[complete Laravel Client guide](docs/guide.md).
+[Laravel Client guide in Markdown](docs/guide.md) or [HTML](docs/guide.html).
 
 ## Installation
 

@@ -5,8 +5,8 @@ The framework-independent CLI wraps the core and server packages. It uses
 `MKAP_CLI_AUDIT_LOG`.
 
 For database setup, command reference, master-key input, and safety behavior,
-see the
-[complete Administrative CLI guide](docs/guide.md).
+see the [Administrative CLI guide in Markdown](docs/guide.md) or
+[HTML](docs/guide.html).
 
 ## Installation
 

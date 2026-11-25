@@ -6,7 +6,7 @@ is not supported by this package version.
 
 For database setup, route configuration, middleware, Artisan commands, and
 deployment guidance, see the
-[complete Laravel Server guide](docs/guide.md).
+[Laravel Server guide in Markdown](docs/guide.md) or [HTML](docs/guide.html).
 
 ## Installation
 

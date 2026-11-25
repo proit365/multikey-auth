@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Laravel challenge routes, authentication middleware, and administration.">
+  <title>Laravel Server Guide | ProIT365 MultiKey Auth</title>
+  <style>
+:root { color-scheme: light; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; color: #1f2937; background: #f5f7fb; }
+* { box-sizing: border-box; }
+body { margin: 0; line-height: 1.65; }
+header, main, footer { width: min(100% - 2rem, 76rem); margin-inline: auto; }
+header { padding: 1.25rem 0; border-bottom: 1px solid #d8dee9; color: #334155; }
+header p { margin: 0; font-weight: 650; }
+header nav { margin-top: .35rem; font-size: .9rem; }
+main { margin-block: 2rem; }
+article { background: white; border: 1px solid #e1e7ef; border-radius: .65rem; padding: clamp(1.25rem, 4vw, 3rem); box-shadow: 0 2px 10px #0f172a0b; overflow-wrap: anywhere; }
+h1, h2, h3, h4 { line-height: 1.25; color: #111827; }
+h1 { margin-top: 0; font-size: clamp(1.8rem, 4vw, 2.4rem); }
+h2 { margin-top: 2.2rem; padding-bottom: .35rem; border-bottom: 1px solid #e5e7eb; }
+a { color: #0759a5; }
+code, pre { font-family: ui-monospace, SFMono-Regular, Consolas, monospace; }
+:not(pre) > code { background: #eef2f7; border-radius: .25rem; padding: .12em .3em; font-size: .92em; }
+pre { overflow-x: auto; padding: 1rem; border-radius: .45rem; background: #111827; color: #f8fafc; line-height: 1.5; }
+pre code { color: inherit; background: transparent; padding: 0; }
+table { display: block; overflow-x: auto; border-collapse: collapse; width: 100%; }
+th, td { border: 1px solid #d8dee9; padding: .55rem .7rem; text-align: left; vertical-align: top; }
+th { background: #f1f5f9; }
+blockquote { margin-inline: 0; padding: .3rem 1rem; border-left: .25rem solid #94a3b8; color: #475569; }
+li + li { margin-top: .25rem; }
+footer { padding: 0 0 2rem; color: #64748b; font-size: .9rem; }
+@media (max-width: 40rem) { header, main, footer { width: min(100% - 1rem, 76rem); } article { padding: 1rem; } }
+</style>
+</head>
+<body>
+  <header>
+    <p>ProIT365 MultiKey Auth</p>
+    <nav><a href="guide.md">View Markdown source</a></nav>
+  </header>
+  <main><article class="markdown-body">
+<h1 id="laravel-server-guide">Laravel Server Guide</h1>
+<p><code>proit365/laravel-multikey-auth-server</code> integrates the framework-independent
+MKAP server with Laravel 12. It provides an opt-in challenge route, request
+authentication middleware, database-backed repositories, Laravel cache
+rate-limiting, and guarded key-management commands.</p>
+<h2 id="requirements-and-installation">Requirements and installation</h2>
+<ul>
+<li>PHP <code>^8.2</code></li>
+<li>Laravel <code>^12.0</code></li>
+<li><code>ext-pdo</code> and a configured PDO database driver</li>
+<li>Composer access to the Core and framework-independent Server packages</li>
+</ul>
+<pre><code class="language-shell">composer require proit365/laravel-multikey-auth-server:^1.0
+php artisan vendor:publish --tag=mkap-config
+php artisan migrate
+</code></pre>
+<p>Laravel package discovery registers the service provider. Its migration is
+loaded automatically; <code>vendor:publish</code> copies the configuration file so the
+application can customize it.</p>
+<h2 id="configure-the-server">Configure the server</h2>
+<p>The published file is <code>config/multikey-auth-server.php</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Setting</th>
+<th style="text-align: right;">Default</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>database_connection</code></td>
+<td style="text-align: right;"><code>null</code></td>
+<td>Laravel database connection used by the MKAP repositories</td>
+</tr>
+<tr>
+<td><code>master_key_provider</code></td>
+<td style="text-align: right;"><code>null</code></td>
+<td>Application class implementing <code>MasterKeyProviderInterface</code></td>
+</tr>
+<tr>
+<td><code>client_pool_provider</code></td>
+<td style="text-align: right;"><code>null</code></td>
+<td>Optional custom <code>ClientPoolProviderInterface</code></td>
+</tr>
+<tr>
+<td><code>challenge_lifetime_seconds</code></td>
+<td style="text-align: right;"><code>30</code></td>
+<td>Challenge lifetime; valid values are 1–3,600 seconds</td>
+</tr>
+<tr>
+<td><code>maximum_challenge_body_bytes</code></td>
+<td style="text-align: right;"><code>65536</code></td>
+<td>Maximum challenge request body</td>
+</tr>
+<tr>
+<td><code>maximum_authenticated_body_bytes</code></td>
+<td style="text-align: right;"><code>1048576</code></td>
+<td>Maximum protected API body</td>
+</tr>
+<tr>
+<td><code>rate_limits.challenge</code></td>
+<td style="text-align: right;"><code>60</code></td>
+<td>Challenge requests per decay interval and client</td>
+</tr>
+<tr>
+<td><code>rate_limits.authenticate</code></td>
+<td style="text-align: right;"><code>120</code></td>
+<td>Authenticated requests per decay interval and client</td>
+</tr>
+<tr>
+<td><code>rate_limits.decay_seconds</code></td>
+<td style="text-align: right;"><code>60</code></td>
+<td>Rate-limit interval in seconds</td>
+</tr>
+<tr>
+<td><code>routes.enabled</code></td>
+<td style="text-align: right;"><code>false</code></td>
+<td>Whether to register the package's challenge route</td>
+</tr>
+<tr>
+<td><code>routes.challenge_path</code></td>
+<td style="text-align: right;"><code>v1/auth/challenges</code></td>
+<td>Challenge route path</td>
+</tr>
+<tr>
+<td><code>routes.middleware</code></td>
+<td style="text-align: right;"><code>['api']</code></td>
+<td>Middleware applied to that route</td>
+</tr>
+</tbody>
+</table>
+<p>Set the <code>MKAP_DATABASE_CONNECTION</code> and <code>MKAP_MASTER_KEY_PROVIDER</code> environment
+variables as appropriate for the app. The configured master-key provider must
+implement <code>ProIT365\MultiKeyAuth\Core\Server\MasterKeyProviderInterface</code> and
+return a versioned, 32-byte <code>MasterKey</code> from an external secret manager. The
+package intentionally does not create, store, or default a master key.</p>
+<p>The default client-pool provider reads the package's database tables. Provide
+a custom provider only when the application has a different client/pool
+lookup policy. A client must resolve to exactly one active pool.</p>
+<h2 id="database-and-initial-provisioning">Database and initial provisioning</h2>
+<p>The package migration creates the client, pool, key, export, challenge,
+generation-batch, authentication-log, and key-rotation tables. Use supported
+Laravel database drivers and keep schema changes under normal migration
+control. The PDO repositories use the configured Laravel connection.</p>
+<p>Create a client record before generating a pool. This package does not expose
+a client-creation Artisan command; use the CLI package or your application's
+administrative workflow. For example, with the
+<a href="https://github.com/proit365/multikey-auth-cli">MKAP CLI</a>:</p>
+<pre><code class="language-shell">mkap client create CLIENT_001 --name=&quot;Checkout service&quot; --confirm
+</code></pre>
+<p>Generate a pool and its encrypted keys:</p>
+<pre><code class="language-shell">php artisan mkap:pools:generate CLIENT_001 POOL_001 \
+  --count=1000 --selection=3 --pool-version=1
+php artisan mkap:pools:inspect POOL_001
+</code></pre>
+<p>The generator prompts for confirmation by default. <code>--force</code> skips that
+prompt; use it only in a controlled administrative workflow. Pool generation
+requires an existing client and rejects a duplicate pool identifier/version.
+Secrets are encrypted before storage and are not printed.</p>
+<h2 id="enable-challenge-issuance">Enable challenge issuance</h2>
+<p>The challenge route is disabled by default. Set <code>routes.enabled</code> to <code>true</code>
+after configuring the database and master-key provider. The package registers
+a <code>POST</code> route at the configured path (default:
+<code>/v1/auth/challenges</code>) with the configured middleware.</p>
+<p>The endpoint accepts JSON containing <code>version</code>, <code>client_id</code>, <code>method</code>,
+<code>target</code>, and <code>body_sha256</code>. <code>body_sha256</code> is the unpadded base64url encoding
+of the 32-byte SHA-256 hash of the exact API body. A successful response
+contains <code>version</code>, <code>request_id</code>, <code>nonce</code>, <code>key_ids</code>, <code>key_count</code>, <code>id_length</code>,
+<code>expires_in</code>, and absolute <code>expires_at</code>. The response is marked <code>Cache-Control:
+no-store</code>.</p>
+<p>See the <a href="https://github.com/proit365/multikey-auth/blob/main/specification/mkap-v1.md">MKAP v1 specification</a>
+for canonical encoding and client/server message requirements.</p>
+<h2 id="protect-application-routes">Protect application routes</h2>
+<p>The service provider registers the <code>multikey.auth</code> middleware alias. Attach it
+only to routes that should require MKAP:</p>
+<pre><code class="language-php">use Illuminate\Support\Facades\Route;
+
+Route::middleware('multikey.auth')-&gt;group(function (): void {
+    Route::post('/api/orders', [OrderController::class, 'store']);
+});
+</code></pre>
+<p>The middleware authenticates the method, <code>getRequestUri()</code> target, and raw
+body, then calls the next middleware/controller only after proof verification.
+Ensure upstream middleware does not rewrite these values before MKAP
+authentication. Unprotected routes remain unprotected; the package does not
+globally secure application routes.</p>
+<h2 id="key-and-export-commands">Key and export commands</h2>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>mkap:pools:generate &lt;client_id&gt; &lt;pool_id&gt; [--count=1000] [--selection=3] [--pool-version=1] [--identifier-length=6] [--alphabet=...] [--force]</code></td>
+<td>Create a pool and encrypted random keys</td>
+</tr>
+<tr>
+<td><code>mkap:pools:inspect &lt;pool_id&gt;</code></td>
+<td>Show pool metadata and active/revoked key counts</td>
+</tr>
+<tr>
+<td><code>mkap:keys:revoke &lt;pool_id&gt; &lt;identifier&gt; [--force]</code></td>
+<td>Immediately revoke an active key</td>
+</tr>
+<tr>
+<td><code>mkap:keys:rotate &lt;pool_id&gt; &lt;identifier&gt; [--reason=...] [--force]</code></td>
+<td>Atomically revoke a key and create its replacement</td>
+</tr>
+<tr>
+<td><code>mkap:exports:create &lt;pool_id&gt; [--client=...] --output=&lt;path&gt; [--development-json] [--force]</code></td>
+<td>Write a client export to a file</td>
+</tr>
+<tr>
+<td><code>mkap:challenges:prune [--dry-run]</code></td>
+<td>Remove expired challenges that have no retained audit record</td>
+</tr>
+</tbody>
+</table>
+<p>Revocation and rotation affect authentication immediately. After rotating a
+key, issue a new client export before clients use the replacement key.
+<code>--force</code> bypasses interactive confirmation; it does not bypass validation.</p>
+<p>Protected export creation is currently disabled because supported client
+loaders do not open authenticated envelopes. The only available export mode
+is <code>--development-json</code>, which writes plaintext secrets. Use it only for
+development and secure the resulting file; never treat it as a production
+credential-delivery mechanism. The command writes to the requested file and
+does not print secret values.</p>
+<h2 id="rate-limiting-and-http-limits">Rate limiting and HTTP limits</h2>
+<p>The package's rate limiter uses Laravel's cache limiter. Configure a shared
+cache store for multiple workers or servers; a process-local cache does not
+provide shared enforcement. The configured counts apply separately to
+<code>challenge</code> and <code>authenticate</code> operations per client.</p>
+<p>Enforce request-size limits at the web server/proxy and PHP layers, in addition
+to the configured challenge and authenticated-body limits. Use HTTPS
+end-to-end and ensure TLS termination/proxy configuration preserves the
+authenticated request target and body.</p>
+<h2 id="errors-and-responses">Errors and responses</h2>
+<p>Errors use a JSON object with an <code>error</code> code and <code>Cache-Control: no-store</code>.
+Known protocol failures map to 400 (bad request), 401 (unauthorized), 403
+(forbidden), 404 (not found), 409 (conflict/replay), 413 (payload too large),
+and 429 (rate limited). Unexpected failures return 500 and are reported
+through Laravel's reporting mechanism.</p>
+<p>Do not expose secret values, expected proofs, or sensitive database details in
+application logs or custom error handlers.</p>
+<h2 id="testing-and-production-readiness">Testing and production readiness</h2>
+<p>Run package tests with:</p>
+<pre><code class="language-shell">composer install
+composer test
+</code></pre>
+<p>The package tests do not verify your production HTTPS, request-size settings,
+shared cache configuration, or multi-worker deployment. Those must be tested
+in the target environment. The protocol has not received an independent
+security review.</p>
+<p>For architecture, protocol, schema, and security details, see the
+<a href="https://github.com/proit365/multikey-auth/tree/main/docs">monorepo documentation</a>.</p>
+  </article></main>
+  <footer><p>HTML guide generated from <a href="guide.md">guide.md</a>. See the <a href="https://github.com/proit365/multikey-auth/tree/main/docs">project documentation</a> for protocol-wide guidance.</p></footer>
+</body>
+</html>

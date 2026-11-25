@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Cryptographic, key-management, export, and storage primitives.">
+  <title>Core Package Guide | ProIT365 MultiKey Auth</title>
+  <style>
+:root { color-scheme: light; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; color: #1f2937; background: #f5f7fb; }
+* { box-sizing: border-box; }
+body { margin: 0; line-height: 1.65; }
+header, main, footer { width: min(100% - 2rem, 76rem); margin-inline: auto; }
+header { padding: 1.25rem 0; border-bottom: 1px solid #d8dee9; color: #334155; }
+header p { margin: 0; font-weight: 650; }
+header nav { margin-top: .35rem; font-size: .9rem; }
+main { margin-block: 2rem; }
+article { background: white; border: 1px solid #e1e7ef; border-radius: .65rem; padding: clamp(1.25rem, 4vw, 3rem); box-shadow: 0 2px 10px #0f172a0b; overflow-wrap: anywhere; }
+h1, h2, h3, h4 { line-height: 1.25; color: #111827; }
+h1 { margin-top: 0; font-size: clamp(1.8rem, 4vw, 2.4rem); }
+h2 { margin-top: 2.2rem; padding-bottom: .35rem; border-bottom: 1px solid #e5e7eb; }
+a { color: #0759a5; }
+code, pre { font-family: ui-monospace, SFMono-Regular, Consolas, monospace; }
+:not(pre) > code { background: #eef2f7; border-radius: .25rem; padding: .12em .3em; font-size: .92em; }
+pre { overflow-x: auto; padding: 1rem; border-radius: .45rem; background: #111827; color: #f8fafc; line-height: 1.5; }
+pre code { color: inherit; background: transparent; padding: 0; }
+table { display: block; overflow-x: auto; border-collapse: collapse; width: 100%; }
+th, td { border: 1px solid #d8dee9; padding: .55rem .7rem; text-align: left; vertical-align: top; }
+th { background: #f1f5f9; }
+blockquote { margin-inline: 0; padding: .3rem 1rem; border-left: .25rem solid #94a3b8; color: #475569; }
+li + li { margin-top: .25rem; }
+footer { padding: 0 0 2rem; color: #64748b; font-size: .9rem; }
+@media (max-width: 40rem) { header, main, footer { width: min(100% - 1rem, 76rem); } article { padding: 1rem; } }
+</style>
+</head>
+<body>
+  <header>
+    <p>ProIT365 MultiKey Auth</p>
+    <nav><a href="guide.md">View Markdown source</a></nav>
+  </header>
+  <main><article class="markdown-body">
+<h1 id="core-package-guide">Core Package Guide</h1>
+<p><code>proit365/multikey-auth-core</code> contains the framework-independent cryptographic,
+key-management, export, and storage primitives used by the MKAP PHP packages.
+It does not register HTTP routes or provide a complete client or server.</p>
+<h2 id="requirements-and-installation">Requirements and installation</h2>
+<ul>
+<li>PHP <code>^8.2</code></li>
+<li><code>ext-openssl</code></li>
+<li><code>ext-pdo</code> or <code>ext-mysqli</code> only when using the corresponding database key
+  repository</li>
+</ul>
+<p>Install the package:</p>
+<pre><code class="language-shell">composer require proit365/multikey-auth-core:^1.0
+</code></pre>
+<p>Classes use the <code>ProIT365\MultiKeyAuth\Core\</code> namespace and are loaded through
+Composer's PSR-4 autoloader.</p>
+<h2 id="key-pools-and-identifiers">Key pools and identifiers</h2>
+<p><code>PoolMetadata</code> describes a pool using its public identifier, version,
+identifier length and alphabet, total key count, and challenge selection
+count. Versions and counts must be positive, the selection count cannot exceed
+the pool size, and identifier alphabets cannot contain duplicate characters.
+The default identifier alphabet is lowercase ASCII letters and digits; the
+default identifier length is six.</p>
+<p><code>IdentifierGenerator</code> uses a <code>RandomGeneratorInterface</code> implementation to
+produce unique identifiers. <code>SecureRandomGenerator</code> is the production
+implementation. <code>PoolGenerator</code> creates 32-byte <code>KeyMaterial</code> values and
+<code>ManagedKey</code> records; it supports progress callbacks and cancellation. Pool
+generation is limited to 1,000,000 keys.</p>
+<pre><code class="language-php">use ProIT365\MultiKeyAuth\Core\Key\IdentifierGenerator;
+use ProIT365\MultiKeyAuth\Core\Key\PoolGenerator;
+use ProIT365\MultiKeyAuth\Core\Key\PoolMetadata;
+use ProIT365\MultiKeyAuth\Core\Random\SecureRandomGenerator;
+
+$random = new SecureRandomGenerator();
+$metadata = new PoolMetadata(
+    poolId: 'POOL_001',
+    poolVersion: 1,
+    identifierLength: 6,
+    identifierAlphabet: IdentifierGenerator::DEFAULT_ALPHABET,
+    keyCount: 1000,
+    selectionCount: 3
+);
+$generator = new PoolGenerator(
+    $random,
+    new IdentifierGenerator(
+        $random,
+        $metadata-&gt;identifierAlphabet,
+        $metadata-&gt;identifierLength
+    )
+);
+$keys = $generator-&gt;generate($metadata);
+</code></pre>
+<p>Keep generated <code>KeyMaterial</code> and exports secret. Identifiers are public
+references; they are not substitutes for the secret bytes.</p>
+<h2 id="cryptographic-and-encoding-primitives">Cryptographic and encoding primitives</h2>
+<ul>
+<li><code>HkdfSha256::derive($ikm, $salt, $info, $length = 32)</code> derives key material.
+  Input key material must not be empty, the salt must be exactly 32 bytes, and
+  the output length must be between 1 and 8,160 bytes.</li>
+<li><code>HmacSha256::generate($message, $key)</code> requires a 32-byte key and returns a
+  32-byte binary proof. <code>verify()</code> uses a constant-time comparison.</li>
+<li><code>BodyHasher::sha256()</code> returns the raw 32-byte SHA-256 digest;
+  <code>sha256Hex()</code> returns its hexadecimal representation.</li>
+<li><code>CanonicalMessageEncoder</code> constructs the MKAP v1 HKDF context and proof
+  message. Use it rather than application-specific serialization.</li>
+<li><code>BinaryEncoder</code> writes network-byte-order integer and length-prefixed fields.
+  <code>Base64Url</code> provides the protocol's unpadded base64url representation.</li>
+<li><code>RequestMetadataValidator</code> validates protocol client identifiers, HTTP
+  methods, request targets, and binary body hashes.</li>
+</ul>
+<p>The exact field ordering and wire requirements are defined by the
+<a href="https://github.com/proit365/multikey-auth/blob/main/specification/mkap-v1.md">MKAP v1 specification</a>
+and its <a href="https://github.com/proit365/multikey-auth/blob/main/specification/test-vectors-v1.json">test vectors</a>.
+Do not change canonical encoding in an application adapter.</p>
+<h2 id="secret-encryption-and-storage">Secret encryption and storage</h2>
+<p><code>MasterKey</code> accepts exactly 32 bytes and a positive key version. Obtain those
+bytes from an external key-management system; do not hard-code or store the
+master key beside encrypted records.</p>
+<p><code>SecretCipher</code> encrypts 32-byte MKAP secrets with AES-256-GCM using a fresh
+12-byte nonce and a 16-byte authentication tag. Supply the same associated
+data when decrypting. For stored keys, use
+<code>KeyAssociatedData::forKey($poolIdentifier, $keyIdentifier)</code> so ciphertext is
+bound to its pool and identifier.</p>
+<p><code>EncryptedSecret::toBinary()</code> and <code>fromBinary()</code> serialize the envelope
+(format version, encryption-key version, nonce, tag, and ciphertext). Store
+the envelope and encryption-key version, not plaintext key bytes.</p>
+<p><code>KeyRepositoryInterface</code> defines storage operations for inserting keys,
+finding active keys, selecting active identifiers, revoking keys, and counting
+active keys. Implementations are provided for PDO and mysqli; an in-memory
+implementation is intended for tests and development. The database adapters
+expect the MKAP schema. See the <a href="https://github.com/proit365/multikey-auth/tree/main/database/mysql">MySQL schema</a>
+or <a href="https://github.com/proit365/multikey-auth/tree/main/database/sqlite">SQLite schema</a>.</p>
+<h2 id="export-format">Export format</h2>
+<p><code>KeyExport</code> represents an MKAP v1 manifest. It includes format and protocol
+versions, client and pool identifiers, pool/export versions, creation time,
+identifier rules, secret length, key count, and key records. Each key record
+contains a public identifier and base64url-encoded secret.</p>
+<p><code>ExportValidator::validate()</code> checks required metadata, key count, identifier
+format and uniqueness, and decodes each 32-byte secret. <code>ExportManager</code> can
+serialize plaintext JSON, calculate its SHA-256 checksum, and create or open an
+AES-GCM protected envelope.</p>
+<p>The primitives do not mean every client can load protected envelopes:
+currently, the PHP, JavaScript, and Flutter client loaders support plaintext
+JSON exports only. The Laravel server integration therefore disables protected
+export creation and labels plaintext exports as development-only. Never treat
+a checksum or encryption primitive as a substitute for secure export delivery
+and storage.</p>
+<h2 id="testing">Testing</h2>
+<p>Run the package test suite from a clean checkout:</p>
+<pre><code class="language-shell">composer install
+composer test
+</code></pre>
+<p>The tests include protocol known-answer vectors. The monorepo's
+cross-package checks are separate from this package suite.</p>
+<h2 id="security-and-support">Security and support</h2>
+<p>Do not log, commit, or expose secrets, plaintext exports, or master-key bytes.
+Use HTTPS for authentication requests, protect client exports at rest, and
+review the threat model before deployment. This package has not received an
+independent security review and is not production certification.</p>
+<p>For the complete project specification and security guidance, see the
+<a href="https://github.com/proit365/multikey-auth/tree/main/docs">monorepo documentation</a>
+and <a href="https://github.com/proit365/multikey-auth/issues">issue tracker</a>.</p>
+  </article></main>
+  <footer><p>HTML guide generated from <a href="guide.md">guide.md</a>. See the <a href="https://github.com/proit365/multikey-auth/tree/main/docs">project documentation</a> for protocol-wide guidance.</p></footer>
+</body>
+</html>

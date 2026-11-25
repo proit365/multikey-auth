@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="PHP MKAP client setup, transport, and authenticated requests.">
+  <title>PHP Client SDK Guide | ProIT365 MultiKey Auth</title>
+  <style>
+:root { color-scheme: light; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; color: #1f2937; background: #f5f7fb; }
+* { box-sizing: border-box; }
+body { margin: 0; line-height: 1.65; }
+header, main, footer { width: min(100% - 2rem, 76rem); margin-inline: auto; }
+header { padding: 1.25rem 0; border-bottom: 1px solid #d8dee9; color: #334155; }
+header p { margin: 0; font-weight: 650; }
+header nav { margin-top: .35rem; font-size: .9rem; }
+main { margin-block: 2rem; }
+article { background: white; border: 1px solid #e1e7ef; border-radius: .65rem; padding: clamp(1.25rem, 4vw, 3rem); box-shadow: 0 2px 10px #0f172a0b; overflow-wrap: anywhere; }
+h1, h2, h3, h4 { line-height: 1.25; color: #111827; }
+h1 { margin-top: 0; font-size: clamp(1.8rem, 4vw, 2.4rem); }
+h2 { margin-top: 2.2rem; padding-bottom: .35rem; border-bottom: 1px solid #e5e7eb; }
+a { color: #0759a5; }
+code, pre { font-family: ui-monospace, SFMono-Regular, Consolas, monospace; }
+:not(pre) > code { background: #eef2f7; border-radius: .25rem; padding: .12em .3em; font-size: .92em; }
+pre { overflow-x: auto; padding: 1rem; border-radius: .45rem; background: #111827; color: #f8fafc; line-height: 1.5; }
+pre code { color: inherit; background: transparent; padding: 0; }
+table { display: block; overflow-x: auto; border-collapse: collapse; width: 100%; }
+th, td { border: 1px solid #d8dee9; padding: .55rem .7rem; text-align: left; vertical-align: top; }
+th { background: #f1f5f9; }
+blockquote { margin-inline: 0; padding: .3rem 1rem; border-left: .25rem solid #94a3b8; color: #475569; }
+li + li { margin-top: .25rem; }
+footer { padding: 0 0 2rem; color: #64748b; font-size: .9rem; }
+@media (max-width: 40rem) { header, main, footer { width: min(100% - 1rem, 76rem); } article { padding: 1rem; } }
+</style>
+</head>
+<body>
+  <header>
+    <p>ProIT365 MultiKey Auth</p>
+    <nav><a href="guide.md">View Markdown source</a></nav>
+  </header>
+  <main><article class="markdown-body">
+<h1 id="php-client-sdk-guide">PHP Client SDK Guide</h1>
+<p><code>proit365/multikey-auth</code> is the framework-independent PHP client for MKAP v1.
+It loads a client export, obtains a challenge, derives a request-bound proof,
+and sends the original API request through an application-provided HTTP
+transport.</p>
+<h2 id="requirements-and-installation">Requirements and installation</h2>
+<ul>
+<li>PHP <code>^8.2</code></li>
+<li><code>proit365/multikey-auth-core:^1.0</code></li>
+<li><code>ext-openssl</code> through the Core dependency</li>
+</ul>
+<pre><code class="language-shell">composer require proit365/multikey-auth:^1.0
+</code></pre>
+<p>Classes use the <code>ProIT365\MultiKeyAuth\Client\</code> namespace. For Laravel, the
+<a href="https://github.com/proit365/laravel-multikey-auth">Laravel client package</a>
+provides configuration, dependency injection, and a facade.</p>
+<h2 id="load-the-client-key-export">Load the client key export</h2>
+<p>The SDK accepts a plaintext MKAP v1 JSON export. Load it with <code>ExportLoader</code>;
+the loader validates the manifest and decodes the base64url key values:</p>
+<pre><code class="language-php">use ProIT365\MultiKeyAuth\Client\ExportLoader;
+
+$exportJson = file_get_contents('/secure/path/client-export.json');
+if ($exportJson === false) {
+    throw new RuntimeException('Unable to read MKAP export.');
+}
+
+$keyPool = (new ExportLoader())-&gt;fromJson($exportJson);
+</code></pre>
+<p>The default maximum export size is 64 MiB. The SDK keeps the decoded secrets
+in process memory for the lifetime of the loaded pool. Store exports outside
+the web root and restrict their access to the application service account.
+Protected export envelopes are not currently supported by this loader.</p>
+<h2 id="configure-and-construct-the-client">Configure and construct the client</h2>
+<p><code>ClientConfig</code> requires:</p>
+<table>
+<thead>
+<tr>
+<th>Argument</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>baseUri</code></td>
+<td>HTTPS origin only; no path, query, credentials, or fragment</td>
+</tr>
+<tr>
+<td><code>clientIdentifier</code></td>
+<td>Public identifier matching the export</td>
+</tr>
+<tr>
+<td><code>poolVersion</code></td>
+<td>Positive pool version matching the export</td>
+</tr>
+<tr>
+<td><code>identifierLength</code></td>
+<td>Identifier width matching the export</td>
+</tr>
+<tr>
+<td><code>identifierAlphabet</code></td>
+<td>Unique-character alphabet matching the export</td>
+</tr>
+<tr>
+<td><code>maximumChallengeResponseBytes</code></td>
+<td>Optional limit; defaults to 65,536 bytes</td>
+</tr>
+<tr>
+<td><code>requireHttps</code></td>
+<td>Defaults to <code>true</code>; disable only for local development/tests</td>
+</tr>
+</tbody>
+</table>
+<p>Supply an implementation of <code>HttpTransportInterface</code>. The transport sends an
+<code>HttpRequest</code> and returns an <code>HttpResponse</code>; it must preserve the supplied
+method, URI, headers, and body bytes. Do not follow redirects or rewrite the
+request target/body after signing.</p>
+<pre><code class="language-php">use ProIT365\MultiKeyAuth\Client\ClientConfig;
+use ProIT365\MultiKeyAuth\Client\ExportLoader;
+use ProIT365\MultiKeyAuth\Client\PhpMultiKeyClient;
+use ProIT365\MultiKeyAuth\Core\Key\IdentifierGenerator;
+
+$pool = (new ExportLoader())-&gt;fromJson($exportJson);
+$config = new ClientConfig(
+    'https://api.example.test',
+    'CLIENT_001',
+    1,
+    6,
+    IdentifierGenerator::DEFAULT_ALPHABET
+);
+$client = new PhpMultiKeyClient($config, $pool, $httpTransport);
+</code></pre>
+<p>Construction fails if the client identifier or pool metadata differs from the
+loaded export.</p>
+<h2 id="make-an-authenticated-request">Make an authenticated request</h2>
+<p>Pass the exact origin-form target, including its query string, and the exact
+body string that the transport will send. Serialize an application payload
+once before calling <code>request()</code>:</p>
+<pre><code class="language-php">$body = json_encode(['status' =&gt; 'pending'], JSON_THROW_ON_ERROR);
+$response = $client-&gt;request('POST', '/api/orders?source=checkout', $body);
+
+if ($response-&gt;statusCode &lt; 200 || $response-&gt;statusCode &gt;= 300) {
+    // Handle the target API's response according to application policy.
+}
+</code></pre>
+<p>The SDK hashes the body, requests a challenge at <code>/v1/auth/challenges</code>, derives
+the proof using the server-selected key identifiers and challenge values, and
+sends the original request with MKAP headers. The SDK does not serialize
+payloads, add retries, or automatically replay API <code>401</code> responses.</p>
+<p><code>HttpResponse</code> exposes <code>statusCode</code>, <code>headers</code>, and <code>body</code>. Non-2xx responses
+from the target API are returned normally. Challenge failures are different:</p>
+<ul>
+<li><code>ChallengeRequestFailedException</code> is thrown for a non-2xx challenge response
+  and includes its status code.</li>
+<li><code>InvalidChallengeResponseException</code> is thrown for malformed, oversized, or
+  inconsistent challenge data, including selected keys missing from the
+  export.</li>
+<li>Invalid local request metadata or configuration throws
+  <code>InvalidArgumentException</code>.</li>
+</ul>
+<h2 id="transport-implementation-requirements">Transport implementation requirements</h2>
+<p>Implement <code>HttpTransportInterface::send(HttpRequest $request): HttpResponse</code>
+using the HTTP client chosen by your application. Ensure that the implementation:</p>
+<ol>
+<li>Sends the method and URI supplied in the <code>HttpRequest</code>.</li>
+<li>Sends every header supplied by the SDK.</li>
+<li>Sends the body bytes unchanged, including an empty body.</li>
+<li>Does not follow redirects or otherwise change the signed request.</li>
+<li>Applies connection/read timeouts and TLS certificate verification suitable
+   for the application.</li>
+</ol>
+<p>The package deliberately does not choose an HTTP library or connection policy.</p>
+<h2 id="security-and-operational-notes">Security and operational notes</h2>
+<ul>
+<li>HTTPS is required by default. Never disable it in production.</li>
+<li>Protect exports as credentials; a complete export permits client
+  impersonation.</li>
+<li>Do not log export contents, secrets, derived proof keys, or proof material.</li>
+<li>A <code>401</code> can come from the target application after successful
+  authentication. The SDK returns it and does not retry the operation.</li>
+<li>Keep client and server pool versions, identifier rules, and exports aligned.</li>
+<li>This package has not received an independent security review; test the
+  complete deployment and review the threat model.</li>
+</ul>
+<h2 id="testing-and-support">Testing and support</h2>
+<p>The standalone PHP Client manifest does not currently declare a Composer test
+script. The monorepo contains the protocol specification, test vectors, and
+cross-framework test suites at
+<a href="https://github.com/proit365/multikey-auth">github.com/proit365/multikey-auth</a>.
+Report issues through the
+<a href="https://github.com/proit365/multikey-auth/issues">project issue tracker</a>.</p>
+  </article></main>
+  <footer><p>HTML guide generated from <a href="guide.md">guide.md</a>. See the <a href="https://github.com/proit365/multikey-auth/tree/main/docs">project documentation</a> for protocol-wide guidance.</p></footer>
+</body>
+</html>

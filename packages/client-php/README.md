@@ -5,8 +5,8 @@ server. It validates client exports, obtains a challenge, derives the proof
 internally, and returns the target API's normal HTTP response.
 
 For transport requirements, configuration, request behavior, and security
-details, see the
-[complete PHP Client SDK guide](docs/guide.md).
+details, see the [PHP Client SDK guide in Markdown](docs/guide.md) or
+[HTML](docs/guide.html).
 
 ## Installation
 
