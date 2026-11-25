@@ -59,10 +59,6 @@ fixture.
 The published v1.0.1 CLI smoke test passed. This does not certify production
 export handling or deployment readiness.
 
-## Development and production readiness
-
-> **Development status:** MKAP v1 remains under development and is not recommended for production use. Publication on Packagist and a passing CLI smoke test do not certify production readiness. The CLI currently supports plaintext development JSON exports only; protected export creation is disabled until all supported client SDKs implement authenticated-envelope opening. Do not use this CLI to create production client exports. The protocol has not received an independent security review. Use this package for development, testing, and evaluation only.
-
 ## Source and support
 
 Project website: [https://www.proit365.com](https://www.proit365.com).
