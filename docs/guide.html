@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="MKAP client, pool, key, export, and challenge administration.">
+  <title>Administrative CLI Guide | ProIT365 MultiKey Auth</title>
+  <style>
+:root { color-scheme: light; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; color: #1f2937; background: #f5f7fb; }
+* { box-sizing: border-box; }
+body { margin: 0; line-height: 1.65; }
+header, main, footer { width: min(100% - 2rem, 76rem); margin-inline: auto; }
+header { padding: 1.25rem 0; border-bottom: 1px solid #d8dee9; color: #334155; }
+header p { margin: 0; font-weight: 650; }
+header nav { margin-top: .35rem; font-size: .9rem; }
+main { margin-block: 2rem; }
+article { background: white; border: 1px solid #e1e7ef; border-radius: .65rem; padding: clamp(1.25rem, 4vw, 3rem); box-shadow: 0 2px 10px #0f172a0b; overflow-wrap: anywhere; }
+h1, h2, h3, h4 { line-height: 1.25; color: #111827; }
+h1 { margin-top: 0; font-size: clamp(1.8rem, 4vw, 2.4rem); }
+h2 { margin-top: 2.2rem; padding-bottom: .35rem; border-bottom: 1px solid #e5e7eb; }
+a { color: #0759a5; }
+code, pre { font-family: ui-monospace, SFMono-Regular, Consolas, monospace; }
+:not(pre) > code { background: #eef2f7; border-radius: .25rem; padding: .12em .3em; font-size: .92em; }
+pre { overflow-x: auto; padding: 1rem; border-radius: .45rem; background: #111827; color: #f8fafc; line-height: 1.5; }
+pre code { color: inherit; background: transparent; padding: 0; }
+table { display: block; overflow-x: auto; border-collapse: collapse; width: 100%; }
+th, td { border: 1px solid #d8dee9; padding: .55rem .7rem; text-align: left; vertical-align: top; }
+th { background: #f1f5f9; }
+blockquote { margin-inline: 0; padding: .3rem 1rem; border-left: .25rem solid #94a3b8; color: #475569; }
+li + li { margin-top: .25rem; }
+footer { padding: 0 0 2rem; color: #64748b; font-size: .9rem; }
+@media (max-width: 40rem) { header, main, footer { width: min(100% - 1rem, 76rem); } article { padding: 1rem; } }
+</style>
+</head>
+<body>
+  <header>
+    <p>ProIT365 MultiKey Auth</p>
+    <nav><a href="guide.md">View Markdown source</a></nav>
+  </header>
+  <main><article class="markdown-body">
+<h1 id="administrative-cli-guide">Administrative CLI Guide</h1>
+<p><code>proit365/multikey-auth-cli</code> provides the <code>mkap</code> command for client and pool
+administration, key lifecycle operations, exports, challenge cleanup, and
+audit listing. It uses PDO and the MKAP database schema; it does not create
+the schema or configure a web server.</p>
+<h2 id="requirements-and-installation">Requirements and installation</h2>
+<ul>
+<li>PHP <code>^8.2</code></li>
+<li><code>ext-pdo</code> and a PDO driver for the selected database</li>
+<li><code>proit365/multikey-auth-core:^1.0</code></li>
+<li><code>proit365/multikey-auth-server:^1.0</code></li>
+<li><code>ext-pdo_sqlite</code> for the package's SQLite-based development test</li>
+</ul>
+<p>Install it in the application:</p>
+<pre><code class="language-shell">composer require proit365/multikey-auth-cli:^1.0
+vendor/bin/mkap help
+</code></pre>
+<p>Composer installs the <code>mkap</code> executable as <code>vendor/bin/mkap</code>. In a
+single-project deployment, configure a restricted database account for the
+CLI and run commands from the application's deployment environment.</p>
+<h2 id="database-configuration">Database configuration</h2>
+<p>The executable reads these environment variables:</p>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>MKAP_CLI_DSN</code></td>
+<td>PDO data-source name</td>
+</tr>
+<tr>
+<td><code>MKAP_CLI_DB_USERNAME</code></td>
+<td>Optional database username</td>
+</tr>
+<tr>
+<td><code>MKAP_CLI_DB_PASSWORD</code></td>
+<td>Optional database password</td>
+</tr>
+<tr>
+<td><code>MKAP_CLI_AUDIT_LOG</code></td>
+<td>Optional append-only JSON-lines audit-log path</td>
+</tr>
+<tr>
+<td><code>MKAP_CLI_MASTER_KEY_HEX</code></td>
+<td>64 hexadecimal characters encoding a 32-byte master key</td>
+</tr>
+</tbody>
+</table>
+<p>Examples:</p>
+<pre><code class="language-text">MKAP_CLI_DSN=mysql:host=127.0.0.1;dbname=mkap;charset=utf8mb4
+MKAP_CLI_DB_USERNAME=mkap_admin
+MKAP_CLI_DB_PASSWORD=&lt;provided by the deployment secret manager&gt;
+</code></pre>
+<p>For SQLite, use a DSN such as <code>sqlite:/secure/path/mkap.sqlite</code>. Apply the MKAP
+schema before using database commands. The schema is supplied by the Laravel
+server package migration or the
+<a href="https://github.com/proit365/multikey-auth/tree/main/database">monorepo MySQL/SQLite schema files</a>.
+Use database credentials with only the permissions required for the selected
+administrative tasks.</p>
+<p>The CLI can also read a 32-byte hexadecimal master key from standard input
+with <code>--master-key-stdin</code>. Do not pass master-key material on a command line:
+<code>--master-key-hex</code> is intentionally rejected. Prefer a secret manager or
+protected input channel; never commit the environment value or write it to
+logs.</p>
+<h2 id="command-reference">Command reference</h2>
+<p>Use <code>mkap help</code> to print the supported command list.</p>
+<h3 id="clients">Clients</h3>
+<pre><code class="language-text">mkap client create &lt;client_id&gt; [--name=&lt;name&gt;] [--dry-run] [--confirm]
+mkap client inspect &lt;client_id&gt;
+mkap client revoke &lt;client_id&gt; [--dry-run] [--confirm]
+</code></pre>
+<p><code>create</code> defaults the display name to the client identifier. <code>inspect</code> prints
+client metadata. <code>revoke</code> disables an active client. Create and revoke require
+<code>--confirm</code> unless <code>--dry-run</code> is supplied.</p>
+<h3 id="pools">Pools</h3>
+<pre><code class="language-text">mkap pool create &lt;client_id&gt; &lt;pool_id&gt; [--count=1000] [--selection=3]
+  [--pool-version=1] [--identifier-length=6] [--alphabet=&lt;characters&gt;]
+  [--dry-run] [--confirm]
+mkap pool inspect &lt;pool_id&gt;
+mkap pool list
+mkap pool revoke &lt;pool_id&gt; [--dry-run] [--confirm]
+mkap pool generate &lt;pool_id&gt; [--pool-version=1] [--master-key-stdin]
+  [--dry-run] [--confirm]
+</code></pre>
+<p><code>pool create</code> records metadata; it does not create secret keys. <code>pool generate</code>
+creates the configured number of random keys and encrypts them with the
+external master key. Supported pool counts are 1–1,000,000, selection count
+must be between 1 and key count, pool version must be positive, and identifier
+length must be 1–256.</p>
+<p>Example:</p>
+<pre><code class="language-shell">mkap pool create CLIENT_001 POOL_001 --count=1000 --selection=3 --confirm
+mkap pool generate POOL_001 --pool-version=1 --confirm --master-key-stdin
+</code></pre>
+<p>For the second command, provide the 64-character hexadecimal master key on
+standard input using the deployment's protected secret-input mechanism.
+Secret bytes are never printed.</p>
+<h3 id="keys">Keys</h3>
+<pre><code class="language-text">mkap key inspect &lt;pool_id&gt; &lt;identifier&gt;
+mkap key revoke &lt;pool_id&gt; &lt;identifier&gt; [--dry-run] [--confirm]
+mkap key rotate &lt;pool_id&gt; &lt;identifier&gt; [--master-key-stdin] [--dry-run]
+  [--confirm] [--reason=&lt;text&gt;]
+</code></pre>
+<p>Inspection reports public metadata and status, not the encrypted secret.
+Revocation stops use of the active key. Rotation transactionally revokes the
+old key and creates a replacement; issue and securely distribute a new client
+export afterward. Both operations require <code>--confirm</code> unless <code>--dry-run</code> is
+used. Rotation records a reason, defaulting to <code>CLI key replacement</code>.</p>
+<h3 id="exports">Exports</h3>
+<pre><code class="language-text">mkap export create &lt;pool_id&gt; --output=&lt;path&gt; [--master-key-stdin]
+  [--development-json] [--dry-run] [--confirm]
+mkap export validate &lt;path&gt;
+</code></pre>
+<p>The currently supported export is plaintext JSON selected with
+<code>--development-json</code>. Protected export opening is not yet supported by every
+client, so protected export creation is disabled. Plaintext exports contain
+all active client secrets and are development-only; do not use them for
+production distribution. The command requires <code>--confirm</code>, writes atomically
+with restrictive file permissions where supported, and never prints secret
+values. Protect the destination directory and securely transfer and remove
+the export when it is no longer needed.</p>
+<p><code>export validate</code> checks the manifest and reports non-secret metadata. It
+accepts files up to 64 MiB.</p>
+<h3 id="challenge-cleanup-and-audit">Challenge cleanup and audit</h3>
+<pre><code class="language-text">mkap challenge cleanup [--dry-run] [--confirm]
+mkap audit list [--limit=50]
+</code></pre>
+<p>Cleanup removes expired challenges that do not have retained audit records.
+Use <code>--dry-run</code> to count eligible rows first; a real cleanup requires
+<code>--confirm</code>. The audit-list limit must be from 1 to 1,000. Database commands
+write an audit event to standard output; set <code>MKAP_CLI_AUDIT_LOG</code> to also
+append JSON-lines records to a file.</p>
+<h2 id="safety-behavior">Safety behavior</h2>
+<ul>
+<li>Database access is required for client, pool, key, challenge, and audit
+  operations. <code>help</code> and <code>export validate</code> do not require a database.</li>
+<li>Mutating operations require <code>--confirm</code>; use <code>--dry-run</code> to preview supported
+  mutations. <code>--dry-run</code> does not replace review of the target identifiers.</li>
+<li>Pool creation and key rotation/revocation change authentication state. Check
+  the pool/client identifiers and coordinate export rotation before execution.</li>
+<li>The CLI never prints key secret values. Avoid placing secrets in shell
+  history, process arguments, audit metadata, or diagnostic output.</li>
+<li>Use a separate privileged administrative account and monitor the audit log.</li>
+</ul>
+<p>The CLI is an administrative utility, not a substitute for backups, change
+approval, secret-management controls, or production-readiness review.</p>
+<h2 id="testing-and-support">Testing and support</h2>
+<p>Run package tests with:</p>
+<pre><code class="language-shell">composer install
+composer test
+</code></pre>
+<p>The test script uses an in-memory SQLite database. For protocol and deployment
+guidance, consult the
+<a href="https://github.com/proit365/multikey-auth/tree/main/docs">monorepo documentation</a>
+and the <a href="https://github.com/proit365/multikey-auth/issues">project issue tracker</a>.</p>
+  </article></main>
+  <footer><p>HTML guide generated from <a href="guide.md">guide.md</a>. See the <a href="https://github.com/proit365/multikey-auth/tree/main/docs">project documentation</a> for protocol-wide guidance.</p></footer>
+</body>
+</html>
