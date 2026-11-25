@@ -4,9 +4,11 @@
 
 *One request. Multiple keys. One cryptographic proof.*
 
-[![Publisher](https://img.shields.io/badge/Publisher-ProIT365-blue)](https://proit365.com)
+[![Publisher](https://img.shields.io/badge/Publisher-ProIT365-blue)](https://www.proit365.com/)
 [![Protocol](https://img.shields.io/badge/Protocol-MKAP%20v1-informational)](#protocol-overview)
 [![Development](https://img.shields.io/badge/Status-Under%20Development-orange)](#project-status)
+
+**Project website:** [https://mkap.proit365.com/](https://mkap.proit365.com/)
 
 **ProIT365 MultiKey Auth** is a multi-key challenge-response authentication system designed to protect API requests through dynamically selected cryptographic keys and HMAC-based request verification.
 
@@ -16,7 +18,7 @@ The underlying secret keys are never transmitted during authentication.
 
 The project is designed to provide a framework-independent authentication core with integrations for PHP, Laravel, JavaScript, and Flutter.
 
-> **Development status:** MultiKey Auth is under development. It is not yet recommended for production use. Cryptographic implementation, interoperability testing, and independent security review are required before a production release.
+> **Development status:** MultiKey Auth is under development and is not yet recommended for production use. Published-package, cross-framework, and MySQL tests have passed, but multi-worker/shared-service validation, production deployment checks, protected-export interoperability, and independent security review remain incomplete.
 
 ---
 
@@ -361,7 +363,8 @@ Documentation will be published in the repository as the corresponding component
 
 <badge color="warning">Under Development</badge>
 
-MultiKey Auth is being developed incrementally.
+MultiKey Auth is being developed incrementally. The test results below establish
+tested behavior, not production readiness.
 
 | Area | Status |
 |---|---|
@@ -374,12 +377,22 @@ MultiKey Auth is being developed incrementally.
 | JavaScript SDK | Published package; under development |
 | Flutter SDK | Published package; under development |
 | CLI tools | Published package; under development |
-| Working examples | Not yet released |
-| Automated integration tests | Not yet released |
+| Working examples | Development example available; not production configured |
+| Automated integration tests | Available; package, framework, and MySQL suites run |
 | Independent security review | Pending |
 | Production release | Not available |
 
-This status will be updated as features are implemented, tested, and released.
+### Current validation
+
+The published PHP, Laravel, Node.js, and Dart client flows received
+HTTP 200 from the local Laravel test server. MySQL 8.0.46 persistence checks
+passed using PDO and mysqli where supported. The source PHPUnit, JavaScript,
+and Flutter suites also passed.
+
+These checks do not replace multi-worker replay and shared-rate-limiter tests,
+production HTTPS and request-limit validation, device-backed Flutter storage
+tests, protected-export interoperability, or independent security review.
+Do not treat the current validation as production certification.
 
 ---
 
@@ -399,7 +412,7 @@ The planned development areas include:
 10. Flutter SDK.
 11. CLI tools.
 12. Working examples and Docker demonstration.
-13. Automated testing and cross-language interoperability.
+13. Ongoing automated testing, interoperability, and release validation.
 14. Security review and performance optimization.
 15. Documentation and release preparation.
 
@@ -446,7 +459,9 @@ This project is distributed under the MIT License. See [LICENSE](LICENSE).
 
 Professional AI Automation · Software Development · Server Solutions
 
-Website: [https://www.proit365.com](https://www.proit365.com)
+Project website: [https://mkap.proit365.com/](https://mkap.proit365.com/)
+
+Main website: [https://www.proit365.com/](https://www.proit365.com/)
 
 GitHub: [https://github.com/proit365/multikey-auth](https://github.com/proit365/multikey-auth)
 

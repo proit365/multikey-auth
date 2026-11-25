@@ -119,6 +119,13 @@ but the protocol has not been independently security reviewed. Review the
 [MKAP monorepo security guidance](https://github.com/proit365/multikey-auth)
 before production use.
 
+## Tests
+
+The published v1.0.2 package passed its two tests, including a live
+challenge-response request that received HTTP 200 from the loopback Laravel
+test server. This does not replace production TLS validation or independent
+security review.
+
 ## Browser limitation
 
 This package requires Node.js built-ins including `crypto`, `http`, `https`,

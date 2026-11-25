@@ -60,6 +60,10 @@ composer install
 composer test
 ```
 
+The published v1.0.1 integration suite passed with 5 tests and 9 assertions,
+including an authenticated request that received HTTP 200 from the local
+Laravel test server. This loopback test is not a production HTTPS validation.
+
 ## Source and support
 
 Project website: [https://www.proit365.com](https://www.proit365.com).

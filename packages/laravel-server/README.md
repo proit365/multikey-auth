@@ -84,6 +84,11 @@ composer install
 composer test
 ```
 
+The published v1.0.2 integration suite passed with 4 tests and 9 assertions.
+The Laravel migration and tests were also run against MySQL 8.0.46. Multi-worker
+replay, shared rate limiting, production HTTPS, and request-size limits remain
+separate release checks.
+
 ## Source and support
 
 Project website: [https://www.proit365.com](https://www.proit365.com).

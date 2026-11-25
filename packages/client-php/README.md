@@ -61,6 +61,12 @@ The SDK keeps validated secrets in memory for the lifetime of the loaded pool.
 Protect the export and process memory appropriately. A complete export
 compromise allows client impersonation.
 
+## Validation status
+
+The published v1.0.2 client completed a live challenge-response request against
+the Laravel test server and received HTTP 200. This loopback integration test
+does not validate a production HTTPS deployment.
+
 ## Source and support
 
 Project website: [https://www.proit365.com](https://www.proit365.com).
