@@ -121,7 +121,7 @@ before production use.
 
 ## Tests
 
-The published v1.0.2 package passed its two tests, including a live
+The historically published v1.0.2 package passed its two tests, including a live
 challenge-response request that received HTTP 200 from the loopback Laravel
 test server. This does not replace production TLS validation or independent
 security review.

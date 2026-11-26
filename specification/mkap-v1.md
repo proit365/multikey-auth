@@ -263,7 +263,7 @@ change the atomic replay guarantee.
 
 ## 13. Status and Error Handling
 
-MKAP The following mapping records the behavior of the shipped PHP/Laravel server
+The following mapping records the behavior of the shipped PHP/Laravel server
 adapter. HTTP status codes do not change the proof format. Clients must treat
 any non-2xx response as a failed operation.
 

@@ -29,6 +29,8 @@ MKAP is custom authentication protocol material under development. It has not
 received an independent security review and is not production-ready. A
 complete client export compromise permits impersonation. Browser JavaScript
 must not hold a complete secret pool.
+Published/live package testing is development verification, not production
+certification.
 
 ## Canonical resources
 

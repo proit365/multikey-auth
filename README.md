@@ -289,7 +289,6 @@ proit365-multikey-auth/
 ├── RELEASE_CHECKLIST.md
 ├── RELEASE_NOTES.md
 ├── DEPLOYMENT_GUIDANCE.md
-├── SEO_METADATA.md
 ├── llms.txt
 ├── composer.dev.json
 │

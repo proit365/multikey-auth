@@ -4,10 +4,11 @@ The common fixture is `specification/test-vectors-v1.json`. It covers the
 HKDF-SHA256 context and output, canonical proof message, HMAC-SHA256 output,
 and base64url request identifier, nonce, and proof.
 
-## Published-package tests (2026-11-26)
+## Recorded published-package tests (2026-11-26)
 
-The installed versions matched the latest stable versions checked at the
-public registries before testing.
+The table below records the versions that were installed and tested on that
+date. It is historical evidence, not a claim that every package release now
+published has passed these tests.
 
 | Published package | Version | Test and result |
 |---|---:|---|
@@ -19,6 +20,13 @@ public registries before testing.
 | `proit365/laravel-multikey-auth` (Laravel client) | 1.0.1 | Composer test suite passed: 5 tests, 9 assertions, including live HTTP 200. |
 | `@proit365/multikey-auth` | 1.0.2 | npm test passed: 2 tests, including live HTTP 200. |
 | `proit365_multikey_auth` | 1.0.3 | Dart test passed: 2 tests, including live HTTP 200; `dart analyze` found no issues. |
+
+Public-registry snapshot on 2026-11-26: npm `@proit365/multikey-auth` is
+1.0.3, pub.dev `proit365_multikey_auth` is 1.0.4, Packagist
+`proit365/multikey-auth` is 1.0.3,
+`proit365/laravel-multikey-auth-server` is 1.0.3, and
+`proit365/laravel-multikey-auth` is 1.0.2. The newer Flutter, npm, PHP client,
+and Laravel server releases were not rerun in this cleanup.
 
 The PHP, JavaScript, and Dart clients reached the Laravel test server at
 `127.0.0.1:8001`; each test asserted HTTP 200 from the protected endpoint.

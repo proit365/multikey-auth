@@ -36,15 +36,15 @@ tag can trigger an authorized publish.
 ## Release procedure
 
 The latest published package version verified against the pub.dev API on
-2026-11-26 is `1.0.3` (published 2026-11-23). The registry history lists
-`1.0.0`, `1.0.1`, and `1.0.3`; there is no `1.0.2` release. The package
+2026-11-26 was `1.0.4` (after a `1.0.3` release published 2026-11-23). The registry history lists
+`1.0.0`, `1.0.1`, `1.0.3`, and `1.0.4`; there is no `1.0.2` release. The package
 metadata leaves `publish_to` unset, so the default registry is pub.dev.
 
 `flutter pub publish --dry-run` validated the current `1.0.3` archive with no
 warnings and one non-fatal version-increment hint: pub.dev identifies `1.0.1`
 as the prior version because `1.0.2` was skipped. No package was published.
 
-Replace `1.0.4` below with the next owner-approved version. Do not reuse or
+Replace `1.0.5` below with the next owner-approved version. Do not reuse or
 republish an existing version.
 
 The standalone instructions below are the supported repository workflow.
@@ -56,7 +56,7 @@ are not required.
 Set the matching version in `packages/flutter/pubspec.yaml`:
 
 ```yaml
-version: 1.0.4
+version: 1.0.5
 ```
 
 Update `packages/flutter/CHANGELOG.md`, then run from the monorepo root:
@@ -81,7 +81,7 @@ git add packages/flutter/CHANGELOG.md
 git add .github/workflows/publish-flutter.yml
 git add docs/PUBLISH-FLUTTER.md
 
-git commit -m "Prepare Flutter SDK 1.0.4 release"
+git commit -m "Prepare Flutter SDK 1.0.5 release"
 git push origin main
 ```
 
@@ -94,15 +94,15 @@ The tag must point to the commit whose `packages/flutter/pubspec.yaml`
 contains the matching version:
 
 ```powershell
-git tag -a flutter-v1.0.4 -m "Flutter SDK 1.0.4"
-git push origin flutter-v1.0.4
+git tag -a flutter-v1.0.5 -m "Flutter SDK 1.0.5"
+git push origin flutter-v1.0.5
 ```
 
 ### 4. Verify
 
 - Check the run at <https://github.com/proit365/multikey-auth/actions>.
 - Check the package at <https://pub.dev/packages/proit365_multikey_auth>.
-- Confirm that pub.dev lists the approved version `1.0.4`.
+- Confirm that pub.dev lists the approved version `1.0.5`.
 
 Do not publish manually unless automated publishing is unavailable and the
 package remains unchanged except for the required future version.

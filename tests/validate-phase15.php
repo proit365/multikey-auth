@@ -5,11 +5,6 @@ declare(strict_types=1);
 $root = dirname(__DIR__);
 $required = [
     'llms.txt',
-    'SEO_METADATA.md',
-    'website/product-landing.md',
-    'website/documentation-page.md',
-    'website/internal-linking.md',
-    'website/structured-data.md',
 ];
 $failures = [];
 foreach ($required as $file) {
@@ -19,10 +14,8 @@ foreach ($required as $file) {
     }
 }
 
-$landing = file_get_contents($root . '/website/product-landing.md');
 $llms = file_get_contents($root . '/llms.txt');
-$seo = file_get_contents($root . '/SEO_METADATA.md');
-$combined = $landing . "\n" . $llms . "\n" . $seo;
+$combined = $llms;
 
 if (!str_contains($combined, 'https://github.com/proit365/multikey-auth')) {
     $failures[] = 'Verified repository URL is missing.';

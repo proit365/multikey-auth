@@ -11,7 +11,7 @@ results are development verification, not production certification.
       smoke tests.
 - [x] Published Laravel Server v1.0.2 suite (4 tests, 9 assertions) and
       Laravel Client v1.0.1 suite (5 tests, 9 assertions).
-- [x] Published PHP, JavaScript v1.0.2, and Dart/Flutter v1.0.3 client flows
+- [x] Recorded published PHP, JavaScript v1.0.2, and Dart/Flutter v1.0.3 client flows
       reached the Laravel test server and asserted HTTP 200 from the protected
       endpoint.
 - [x] Published Dart package analysis; no issues found.

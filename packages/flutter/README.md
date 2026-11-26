@@ -55,7 +55,7 @@ boundary.
 
 ## Tests
 
-The published v1.0.3 package passed `dart test` with two tests, including a
+The historically published v1.0.3 package passed `dart test` with two tests, including a
 live challenge-response request that received HTTP 200 from the loopback
 Laravel test server; `dart analyze` also passed. Hardware-backed storage has
 not been tested on Android or iOS devices.
