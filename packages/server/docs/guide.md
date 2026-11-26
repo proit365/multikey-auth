@@ -131,14 +131,18 @@ The Laravel adapter maps them as follows:
 
 | Failure | HTTP status |
 |---|---:|
-| Invalid request metadata | 400 |
+| Malformed JSON or invalid/unsupported challenge metadata | 400 |
+| Missing, invalid, expired, or request-mismatched proof | 401 |
 | Unknown client | 403 |
-| Failed or expired proof | 401 |
 | Unknown challenge | 404 |
 | Replay or already-consumed challenge | 409 |
 | Oversized request body | 413 |
 | Rate limit exceeded | 429 |
 | Unexpected internal failure | 500 |
+
+The shipped Laravel adapter does not emit `422`; invalid challenge metadata is
+currently mapped to `400`. Unavailable selected keys fail verification with
+`401`.
 
 Do not reveal secret material, expected proofs, or unnecessary internal
 database details in client-facing errors.

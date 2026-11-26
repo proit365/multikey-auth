@@ -263,17 +263,27 @@ change the atomic replay guarantee.
 
 ## 13. Status and Error Handling
 
-MKAP implementations must use these response code meanings:
+MKAP The following mapping records the behavior of the shipped PHP/Laravel server
+adapter. HTTP status codes do not change the proof format. Clients must treat
+any non-2xx response as a failed operation.
 
-- `400`: malformed JSON or malformed challenge/authentication fields.
-- `401`: missing, invalid, expired, or replayed proof.
-- `403`: client, pool, or selected key disabled or revoked.
+- `400`: malformed JSON, malformed request fields, unsupported protocol
+  versions, or invalid/unsupported challenge metadata.
+- `401`: missing or invalid proof, expired challenge, request-binding failure,
+  or selected key unavailable for verification.
+- `403`: unknown client during challenge issuance.
 - `404`: unknown challenge.
-- `409`: challenge already consumed.
+- `409`: challenge already consumed or replay detected.
 - `413`: request exceeds a configured size limit.
-- `422`: valid JSON but invalid or unsupported request metadata.
 - `429`: challenge or authentication rate limit exceeded.
 - `500`: unexpected internal server error.
+
+The current adapter maps invalid metadata to `400`; it does not emit `422`.
+Using `422` for valid JSON with invalid or unsupported metadata would require a
+separate implementation and compatibility decision, so this documentation
+update does not introduce that behavior. Revoked or unavailable selected keys
+currently fail proof verification with `401`, rather than revealing key state
+with `403`.
 
 Unless a public API explicitly requires more detail, authentication failures
 must use a consistent response shape and must not reveal whether a particular

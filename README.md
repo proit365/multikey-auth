@@ -18,7 +18,7 @@ The underlying secret keys are never transmitted during authentication.
 
 The project is designed to provide a framework-independent authentication core with integrations for PHP, Laravel, JavaScript, and Flutter.
 
-> **Development status:** MultiKey Auth is under development and is not yet recommended for production use. Published-package, cross-framework, and MySQL tests have passed, but multi-worker/shared-service validation, production deployment checks, protected-export interoperability, and independent security review remain incomplete.
+> **Development status:** MultiKey Auth is under development and is not yet recommended for production use. Published-package and live HTTP tests passed on 2026-11-26. MySQL 8.0.46 checks were reported as passing on 2026-11-25 but were not rerun during this cleanup. Multi-worker/shared-service validation, production deployment checks, protected-export interoperability, and independent security review remain incomplete.
 
 ---
 
@@ -146,7 +146,8 @@ The `key_ids` field contains concatenated fixed-length identifiers. The client u
 
 This compact representation is an encoding choice, not a security mechanism.
 
-The final protocol specification will define the exact wire format, canonical message encoding, derivation parameters, and verification rules.
+The canonical wire format, message encoding, derivation parameters, and
+verification rules are defined in the [MKAP v1 specification](specification/mkap-v1.md).
 
 ---
 
@@ -270,38 +271,56 @@ The repository is organized around the public source code, specifications, tests
 ```text
 proit365-multikey-auth/
 │
+├── .github/
+│   └── workflows/
+│       ├── publish-flutter.yml
+│       └── publish-javascript.yml
+├── .gitattributes
+├── .gitignore
 ├── README.md
-├── LICENSE
 ├── CHANGELOG.md
+├── COMPOSER-RELEASE-REPORT.md
 ├── CONTRIBUTING.md
+├── LICENSE
 ├── SECURITY.md
-├── CODE_OF_CONDUCT.md
+├── THREAT_MODEL.md
+├── KNOWN_LIMITATIONS.md
+├── INTEROPERABILITY.md
+├── RELEASE_CHECKLIST.md
+├── RELEASE_NOTES.md
+├── DEPLOYMENT_GUIDANCE.md
+├── SEO_METADATA.md
+├── llms.txt
+├── composer.dev.json
 │
 ├── specification/
-│   ├── protocol-v1.md
-│   ├── cryptography.md
-│   ├── challenge-flow.md
-│   └── interoperability.md
+│   ├── README.md
+│   ├── mkap-v1.md
+│   └── test-vectors-v1.json
 │
 ├── packages/
+│   ├── cli/
+│   ├── client-php/
 │   ├── core/
 │   ├── server/
-│   ├── client-php/
 │   ├── laravel-server/
 │   ├── laravel-client/
 │   ├── javascript/
-│   ├── flutter/
-│   └── cli/
+│   └── flutter/
 │
 ├── database/
-├── tests/
-├── examples/
+│   ├── mysql/
+│   └── sqlite/
 ├── docs/
-├── website/
+├── examples/
+│   └── end-to-end/
+├── tests/
 └── tools/
+    └── release/
 ```
 
-The actual directory structure may evolve as the implementation develops.
+This tree reflects the tracked repository. The website source and published
+package test harness are maintained outside this repository.
 
 ---
 
@@ -314,12 +333,13 @@ Initial development targets include:
 - PHP with strict typing and PSR-4 autoloading.
 - Composer for PHP dependency management.
 - Laravel for framework-specific integrations.
-- Node.js and TypeScript for JavaScript development.
+- Node.js for the JavaScript package.
 - Dart and Flutter for mobile integrations.
 - A database supporting transactional challenge management.
 - Docker and Docker Compose for reproducible demonstrations.
 
-Exact supported versions will be documented as implementations are released.
+Exact runtime constraints are defined in each package manifest and its
+package-specific documentation.
 
 ---
 
@@ -342,20 +362,17 @@ The repository is currently under development. Production installation and usage
 
 ## Documentation
 
-Technical documentation will cover:
+The repository includes:
 
-- Protocol specification.
-- Cryptographic design.
-- Authentication challenge flow.
-- Key generation and pool management.
-- Credential export and rotation.
-- Client and server SDK integration.
-- Laravel middleware and configuration.
-- JavaScript and Flutter integration.
-- Interoperability and testing.
-- Security considerations.
+- The [canonical MKAP v1 specification](specification/mkap-v1.md) and shared
+  [protocol test vectors](specification/test-vectors-v1.json).
+- Architecture, cryptography, security, database, installation, and API guides
+  under [`docs/`](docs/).
+- Package-specific READMEs and guides under [`packages/`](packages/).
+- The [interoperability and test matrix](INTEROPERABILITY.md), examples, and
+  release documentation.
 
-Documentation will be published in the repository as the corresponding components become available.
+Package requirements and commands are documented with each package.
 
 ---
 
@@ -378,18 +395,26 @@ tested behavior, not production readiness.
 | Flutter SDK | Published package; under development |
 | CLI tools | Published package; under development |
 | Working examples | Development example available; not production configured |
-| Automated integration tests | Available; package, framework, and MySQL suites run |
+| Automated package and framework tests | Published-package and local suites passed; see [test status](INTEROPERABILITY.md) |
+| MySQL integration tests | Reported passed on 2026-11-25; not rerun in this cleanup |
 | Independent security review | Pending |
 | Production release | Not available |
 
 ### Current validation
 
-The published PHP, Laravel, Node.js, and Dart client flows received
-HTTP 200 from the local Laravel test server. MySQL 8.0.46 persistence checks
-passed using PDO and mysqli where supported. The source PHPUnit, JavaScript,
-and Flutter suites also passed.
+On 2026-11-26, the published PHP, Laravel, Node.js, and Dart client flows
+passed against the local Laravel test server; the protected endpoint returned
+HTTP 200. The tested versions and automated suite counts are in the
+[interoperability matrix](INTEROPERABILITY.md). Local Core PHPUnit (9 tests,
+20 assertions), Laravel server Testbench (3 tests, 16 assertions), Laravel
+client Testbench (4 tests, 6 assertions), JavaScript tests, Flutter analysis
+and tests, PHP smoke/lint checks, and CLI administration tests also passed.
 
-These checks do not replace multi-worker replay and shared-rate-limiter tests,
+A separate recorded test run reports MySQL 8.0.46 migration and PDO/mysqli
+repository checks passing on 2026-11-25. They were not rerun in this cleanup
+because no MySQL listener or test credentials were available.
+
+These results do not replace multi-worker replay and shared-rate-limiter tests,
 production HTTPS and request-limit validation, device-backed Flutter storage
 tests, protected-export interoperability, or independent security review.
 Do not treat the current validation as production certification.
@@ -398,7 +423,9 @@ Do not treat the current validation as production certification.
 
 ## Roadmap
 
-The planned development areas include:
+The roadmap below records project workstreams; several listed components have
+already been implemented and published. See the status table above and the
+test matrix for current evidence.
 
 1. Protocol specification and security design.
 2. Core cryptographic implementation.

@@ -52,5 +52,11 @@ flutter analyze
 flutter test test/mkap_interoperability_test.dart
 ```
 
-Live Laravel, MySQL, JavaScript HTTP, Flutter HTTP, and concurrent replay tests
-remain environment-blocked until credentials and dependencies are available.
+Published-package and live-HTTP results are tracked in the
+[interoperability matrix](INTEROPERABILITY.md). The latest verified published
+PHP, JavaScript, and Dart client flows reached the Laravel test server and
+asserted HTTP 200 from the protected endpoint. MySQL results have a separate
+recorded test date; multi-worker replay, production HTTPS/request-limit
+validation, protected-export interoperability, device-backed storage, and
+independent security review remain unverified or blocked. Keep unit, package,
+database, live-HTTP, and manual verification claims distinct.

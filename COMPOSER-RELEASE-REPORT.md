@@ -1,5 +1,11 @@
 # Composer Release Audit
 
+> Historical release evidence for the six Composer v1.0.0 tags and the
+> 2026-11-22 clean-install run. Registry patch versions and current test status
+> were rechecked on 2026-11-26; see [INTEROPERABILITY.md](INTEROPERABILITY.md)
+> and [RELEASE_CHECKLIST.md](RELEASE_CHECKLIST.md). Historical phase snapshots
+> below are not current status claims.
+
 **Status:** All six stable `v1.0.0` tags are published and indexed by Packagist;
 all 12 clean Composer installation checks passed.
 **Audit date:** 2026-11-22  
@@ -175,10 +181,11 @@ matrix.
   or mismatched tag, and was verified against an isolated bare repository.
 - `.gitattributes` pins the release shell script to LF so a Windows clone can
   run it under Bash.
-- No tracked GitHub Actions publishing workflow was found.
-- The parent `update.bat` stages broadly, commits, pushes the monorepo, then
-  pushes all six subtree branches without running tests or version/tag gates.
-  It was inspected but not run; do not use it as the release command.
+- No GitHub Actions workflow publishes Composer subtree splits; the tracked
+  workflows are for JavaScript and Flutter registry publication.
+- An external workspace release helper was inspected but is not part of this
+  repository. It stages broadly and can commit/push; do not use it as the
+  Composer release command. Use the reviewed in-repository split script.
 - The Server and PHP-client manifests have no package-local Composer test
   scripts or development test dependencies. Their monorepo-level tests must be
   part of the release gate unless portable package-local tests are added.

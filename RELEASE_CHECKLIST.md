@@ -1,43 +1,71 @@
 # Release Checklist
 
-## Required before any release
+## Validation snapshot
 
-- [x] Run live PHP, JavaScript, and Flutter challenge-response tests against
-  the Laravel server; verify the protected endpoint returns HTTP 200.
-- [ ] Run source-package Laravel Testbench feature suites.
-- [ ] Run live MySQL, mysqli, and PDO/MySQL integration suites.
-- [ ] Run concurrent challenge-consumption testing.
-- [ ] Obtain an independent security review.
-- [ ] Resolve protected-export interoperability across all clients.
-- [ ] Verify shared production rate limiting.
-- [ ] Verify external master-key and secure-export workflows.
-- [ ] Confirm package names and repository availability.
-- [ ] Verify every installation command in a clean environment.
-- [ ] Remove all plaintext test exports and secret values.
+Published-package and local automated tests were run on 2026-11-26. These
+results are development verification, not production certification.
 
-## Multi-repository distribution readiness
+### Passed in the current validation
 
-- [ ] Confirm the six distribution repositories exist and are empty or have
-      only the exact split history; do not seed them with unrelated commits.
-- [ ] Commit source changes, use a clean `main` worktree, and validate the
-      `composer.dev.json` workspace with TLS verification enabled.
-- [ ] Run `php tests/phase13-smoke.php`, the package-specific PHPUnit suites,
-      `npm --prefix packages/javascript test`, and Flutter analysis/tests.
-- [ ] Verify clean consumer installation and dependency tags after registries
-      are available.
-- [ ] Preview all six `git subtree split` outputs and inspect package contents
-      for secrets, generated files, test databases, local configuration, and
-      private planning documents.
-- [ ] Release in dependency order: core; server and PHP client; Laravel server
-      and CLI; Laravel client.
-- [ ] Supply an owner-approved version for each package. Confirm that each
-      distribution tag points to the reviewed split commit.
-- [ ] Register the Composer repositories on Packagist and verify update hooks
-      only after the repositories and first tags exist.
-- [ ] If desired, create a GitHub Release from each verified distribution tag;
-      the local split script creates tags but does not create GitHub Releases.
+- [x] Published Core v1.0.1, Server v1.0.1, CLI v1.0.1, and PHP Client v1.0.2
+      smoke tests.
+- [x] Published Laravel Server v1.0.2 suite (4 tests, 9 assertions) and
+      Laravel Client v1.0.1 suite (5 tests, 9 assertions).
+- [x] Published PHP, JavaScript v1.0.2, and Dart/Flutter v1.0.3 client flows
+      reached the Laravel test server and asserted HTTP 200 from the protected
+      endpoint.
+- [x] Published Dart package analysis; no issues found.
+- [x] Local Core PHPUnit (9 tests, 20 assertions), Laravel Server Testbench
+      (3 tests, 16 assertions), Laravel Client Testbench (4 tests, 6 assertions),
+      JavaScript interoperability, Flutter analysis/tests, PHP smoke/lint, and
+      CLI administration tests.
+
+See [INTEROPERABILITY.md](INTEROPERABILITY.md) for the exact published package
+versions and test categories.
+
+### Prior recorded results, not rerun here
+
+- MySQL 8.0.46 migration, Laravel tests, PDO/mysqli key repositories, and PDO
+  challenge repository were reported as passing on 2026-11-25. They were not
+  rerun in this cleanup because no MySQL listener or test credentials were
+  available.
+- Twelve clean Packagist installations of the six Composer packages at v1.0.0
+  (unversioned and `^1.0`) were reported as passing on 2026-11-22. This is not
+  a clean-install matrix for current versions of all registries.
+
+## Open production-readiness gates
+
+- [ ] Run multi-worker concurrent challenge-consumption tests against a shared
+      challenge store.
+- [ ] Verify shared atomic rate limiting across workers.
+- [ ] Validate production HTTPS, proxy behavior, and request-size limits.
+- [ ] Complete protected-export interoperability across supported clients.
+- [ ] Test Flutter secure-storage adapters on supported Android and iOS devices.
+- [ ] Obtain an independent security review from qualified reviewers outside
+      the implementation team.
+- [ ] Verify clean installs of current npm/pub.dev versions and a current
+      all-registry clean-install matrix.
+- [ ] Review secret-handling and export-removal procedures for the target
+      deployment.
+
+Passing automated tests do not establish production readiness. Do not treat
+loopback HTTP, SQLite, single-process tests, or package publication as evidence
+that these open gates have passed.
+
+## Future package release procedure
+
+- [ ] Review the package diff and owner-approved version.
+- [ ] Run the relevant source tests and required release checks.
+- [ ] Verify the package's dependencies and published registry state.
+- [ ] Preview the package subtree or registry archive and inspect it for
+      secrets, local configuration, and generated files.
+- [ ] Release Composer packages in dependency order: Core; Server and PHP
+      Client; Laravel Server and CLI; Laravel Client.
 - [ ] Keep JavaScript/npm and Flutter/pub.dev releases separate from Composer
       subtree synchronization.
+
+A version tag or package publication does not close any of the production
+readiness gates listed above.
 
 ## Release metadata
 
@@ -47,5 +75,4 @@
 - License: MIT
 - Development status: not production-ready
 
-See the [local distribution workflow](tools/release/README.md). Its script
-does not create repositories or register/publish packages.
+See the [local distribution workflow](tools/release/README.md).

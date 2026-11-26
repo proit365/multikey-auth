@@ -8,7 +8,7 @@ proof, and only then accepts the protected order request.
 
 - PHP 8.2 or newer with `pdo_sqlite` and OpenSSL
 - Composer 2
-- Node.js 12 or newer
+- Node.js 22 or newer
 
 ## Run it
 

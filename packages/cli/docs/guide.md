@@ -54,8 +54,11 @@ administrative tasks.
 The CLI can also read a 32-byte hexadecimal master key from standard input
 with `--master-key-stdin`. Do not pass master-key material on a command line:
 `--master-key-hex` is intentionally rejected. Prefer a secret manager or
-protected input channel; never commit the environment value or write it to
-logs.
+protected input channel for production. Environment variables are inherited by
+child processes and may be exposed through process inspection, crash
+diagnostics, or environment dumps; use them only when the deployment can
+protect the process environment. Never commit the environment value or write
+it to logs.
 
 ## Command reference
 
@@ -100,7 +103,9 @@ mkap pool generate POOL_001 --pool-version=1 --confirm --master-key-stdin
 ```
 
 For the second command, provide the 64-character hexadecimal master key on
-standard input using the deployment's protected secret-input mechanism.
+standard input using the deployment's protected secret-input mechanism or
+retrieve it from an external secret manager. Avoid putting the key in an
+environment variable for production deployments.
 Secret bytes are never printed.
 
 ### Keys

@@ -1,9 +1,11 @@
 # Security
 
 Read [SECURITY.md](../SECURITY.md),
-[SECURITY_REVIEW.md](../SECURITY_REVIEW.md),
 [THREAT_MODEL.md](../THREAT_MODEL.md), and
 [KNOWN_LIMITATIONS.md](../KNOWN_LIMITATIONS.md).
+
+No independent security review has been completed. Internal planning and
+automated checks do not constitute an independent audit.
 
 Deployment requirements:
 

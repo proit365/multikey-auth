@@ -153,10 +153,12 @@ authenticated request target and body.
 ## Errors and responses
 
 Errors use a JSON object with an `error` code and `Cache-Control: no-store`.
-Known protocol failures map to 400 (bad request), 401 (unauthorized), 403
-(forbidden), 404 (not found), 409 (conflict/replay), 413 (payload too large),
-and 429 (rate limited). Unexpected failures return 500 and are reported
-through Laravel's reporting mechanism.
+Malformed JSON and invalid/unsupported challenge metadata return 400; missing,
+invalid, expired, or request-mismatched proofs return 401; an unknown client
+returns 403; unknown challenges return 404; replay returns 409; oversized
+requests return 413; and rate limits return 429. Unexpected failures return
+500 and are reported through Laravel's reporting mechanism. This adapter does
+not currently emit 422, and does not change these existing status mappings.
 
 Do not expose secret values, expected proofs, or sensitive database details in
 application logs or custom error handlers.

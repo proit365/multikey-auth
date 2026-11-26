@@ -25,33 +25,38 @@ If the environment is required on pub.dev, create a GitHub repository
 environment named `pub.dev` under **Settings > Environments**. The workflow
 already passes `environment: pub.dev`.
 
+The repository cannot confirm the registry-side automated-publishing settings
+or GitHub environment protection. Verify them while signed in before creating
+a release tag.
+
 Tag protection rules can additionally restrict who can create matching release
 tags. This is recommended because any GitHub account allowed to push a matching
 tag can trigger an authorized publish.
 
 ## Release procedure
 
-Replace `1.0.1` in the following procedure with the intended independent
-future version. Do not reuse or republish `1.0.0`.
+The latest published package version verified against the pub.dev API on
+2026-11-26 is `1.0.3` (published 2026-11-23). The registry history lists
+`1.0.0`, `1.0.1`, and `1.0.3`; there is no `1.0.2` release. The package
+metadata leaves `publish_to` unset, so the default registry is pub.dev.
 
-The parent `update.ps1` release driver can also perform the Flutter validation
-and push the matching release tag after the normal monorepo and Composer split
-release steps. `update.bat` remains as a compatibility launcher. PowerShell's
-execution policy must permit the script; the launcher does not change or bypass
-that policy. The driver asks for separate confirmation before creating or
-pushing the Flutter tag. It never calls `flutter pub publish --force`;
-publication is performed by the GitHub Actions OIDC workflow after the tag is
-pushed.
+`flutter pub publish --dry-run` validated the current `1.0.3` archive with no
+warnings and one non-fatal version-increment hint: pub.dev identifies `1.0.1`
+as the prior version because `1.0.2` was skipped. No package was published.
 
-Menu option 3 runs this Flutter release path directly. Option 4 includes Flutter
-in its eight-package individual selector and routes it to the same tag workflow.
+Replace `1.0.4` below with the next owner-approved version. Do not reuse or
+republish an existing version.
+
+The standalone instructions below are the supported repository workflow.
+Optional local workspace release helpers are not part of this repository and
+are not required.
 
 ### 1. Update and validate
 
 Set the matching version in `packages/flutter/pubspec.yaml`:
 
 ```yaml
-version: 1.0.1
+version: 1.0.4
 ```
 
 Update `packages/flutter/CHANGELOG.md`, then run from the monorepo root:
@@ -76,7 +81,7 @@ git add packages/flutter/CHANGELOG.md
 git add .github/workflows/publish-flutter.yml
 git add docs/PUBLISH-FLUTTER.md
 
-git commit -m "Prepare Flutter SDK 1.0.1 release"
+git commit -m "Prepare Flutter SDK 1.0.4 release"
 git push origin main
 ```
 
@@ -89,15 +94,15 @@ The tag must point to the commit whose `packages/flutter/pubspec.yaml`
 contains the matching version:
 
 ```powershell
-git tag -a flutter-v1.0.1 -m "Flutter SDK 1.0.1"
-git push origin flutter-v1.0.1
+git tag -a flutter-v1.0.4 -m "Flutter SDK 1.0.4"
+git push origin flutter-v1.0.4
 ```
 
 ### 4. Verify
 
 - Check the run at <https://github.com/proit365/multikey-auth/actions>.
 - Check the package at <https://pub.dev/packages/proit365_multikey_auth>.
-- Confirm that pub.dev lists version `1.0.1`.
+- Confirm that pub.dev lists the approved version `1.0.4`.
 
 Do not publish manually unless automated publishing is unavailable and the
 package remains unchanged except for the required future version.
